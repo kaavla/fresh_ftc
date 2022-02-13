@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+import java.util.List;
+
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
  * classes). The robot drives back and forth in a straight line indefinitely. Utilization of the
@@ -46,7 +48,25 @@ public class BackAndForth extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             drive.followTrajectory(trajectoryForward);
+            List<Double> a1 = drive.getWheelPositions();
+            for (int i = 0; i < a1.size(); i++) {
+                telemetry.addData("Forward:", " %2f", a1.get(i));
+            }
+
+            telemetry.update();
+            sleep(2000);
+
+
             drive.followTrajectory(trajectoryBackward);
+            List<Double> a2 = drive.getWheelPositions();
+
+            for (int i = 0; i < a2.size(); i++) {
+                telemetry.addData("Forward:", " %2f", a2.get(i));
+            }
+
+            telemetry.update();
+            sleep(2000);
+
         }
     }
 }
