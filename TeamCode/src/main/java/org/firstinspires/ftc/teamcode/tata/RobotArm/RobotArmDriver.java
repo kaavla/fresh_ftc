@@ -1,0 +1,188 @@
+package org.firstinspires.ftc.teamcode.tata.RobotArm;
+
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+public class RobotArmDriver implements Runnable {
+    private RobotArmHW armHW = new RobotArmHW();
+
+    private double delta_x = 0.0;
+    private double delta_y = 0.0;
+    private double delta_theta = 0.0;
+
+    private boolean is_done = true;
+
+    //Thead run condition
+    private boolean isRunning = true;
+
+    //Sleep time interval (milliseconds) for the position update thread
+    private int sleepTime;
+
+    public RobotArmDriver(HardwareMap ahwMap, int threadSleepDelay) {
+        armHW.init(ahwMap);
+        sleepTime = threadSleepDelay;
+    }
+    public void initArmPos(int posNum) {
+        if (posNum == 10) {
+            //Dont use this
+            //resting position
+            //base servo
+            armHW.servoSetPosRaw(0.5, 1);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //arm servo
+            armHW.servoSetPosRaw(0.9, 2);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            armHW.servoSetPosRaw(0.0, 1);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            armHW.servoSetPosRaw(0.0, 3);
+
+        } else if (posNum == 1) {
+            //Collect position
+            //arm servo
+            armHW.servoSetPosRaw(0.7, 2);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //base servo
+            armHW.servoSetPosRaw(0.8, 1);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            armHW.servoSetPosRaw(0.6, 3);
+
+        }  else if (posNum == 2) {
+            //drop position
+            //arm servo
+            armHW.servoSetPosRaw(0.0, 2);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //base servo
+            armHW.servoSetPosRaw(0.5, 1);
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            armHW.servoSetPosRaw(1.0, 3);
+
+        }
+
+    }
+
+    private void robotArmPositionUpdate() {
+        double xpos = armHW.getArmTipXPos();
+        double ypos = armHW.getArmTipYPos();
+
+        if (delta_x != 0 || delta_y != 0) {
+            //Move the robot Arm only for non-zero values of delta_x, delta_y
+            armHW.moveRobotArmTo(xpos + delta_x, ypos + delta_y);
+
+            //reset delta_x/delta_y state
+            delta_x = 0;
+            delta_y = 0;
+            is_done = true;
+        }
+        if (delta_theta != 0) {
+            armHW.rotateArmTo(delta_theta);
+
+            delta_theta = 0.0;
+            is_done = true;
+        }
+    }
+
+    public void checkGamePad(Gamepad gp) {
+        if ((gp.left_stick_y != 0) || (gp.left_stick_x != 0) ) {
+            double leftY = gp.left_stick_y*-1;
+            double leftX = gp.left_stick_x * 1;
+            moveRobotArmBy(leftX,leftY, 0.0);
+        } /*
+        if (gp.b) {
+            //armHW.servoSetPosRawRelative(0.05, 2);
+            moveRobotArmBy(0.5,0.0, 0.0);
+        } else if (gp.x) {
+            //armHW.servoSetPosRawRelative(-0.05, 2);
+            moveRobotArmBy(-0.5,0.0, 0.0);
+        } else if (gp.y) {
+            moveRobotArmBy(0.0,0.5, 0.0);
+            //armHW.servoSetPosRawRelative(-0.05, 1);
+        } else if (gp.a) {
+            moveRobotArmBy(0.0,-0.5, 0.0);
+            //armHW.servoSetPosRawRelative(0.05, 1);
+        }else if (gp.left_stick_button) {
+            moveRobotArmBy(0.0,0.0, 15);
+        }else if (gp.right_stick_button) {
+            moveRobotArmBy(0,0.0, -15);
+        } else if (gp.left_bumper) {
+            //collect position
+            initArmPos(1);
+        } else if (gp.right_bumper) {
+            //drop position
+            initArmPos(2);
+        }
+        */
+
+    }
+
+    public RobotArmParams getRobotParams() {
+        RobotArmParams param = new RobotArmParams();
+        param.xpos = armHW.getArmTipXPos();
+        param.ypos = armHW.getArmTipYPos();
+        param.baseServoAbsPosInDegree = armHW.getBaseAbsPosInDegree();
+        param.linkServoAbsPosInDegree = armHW.getLinkAbsPosInDegree();
+        param.currOrientationInDegree = armHW.getCurrOrientationInDegree();
+        param.motorEncoderRawVal = armHW.getMotorEncoderRawValue();
+        param.s1ServoRawPos = armHW.getServoPosRaw(1);
+        param.s2ServoRawPos = armHW.getServoPosRaw(2);
+        param.s3ServoRawPos = armHW.getServoPosRaw(3);
+
+        return param;
+    }
+
+    public void moveRobotArmBy(double dx, double dy, double d_theta) {
+        if (is_done == true) {
+            delta_x = dx;
+            delta_y = dy;
+            delta_theta = d_theta;
+            is_done = false;
+        }
+    }
+
+    public void stop() {
+        isRunning = false;
+    }
+
+    @Override
+    public void run() {
+        while (isRunning) {
+            robotArmPositionUpdate();
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
