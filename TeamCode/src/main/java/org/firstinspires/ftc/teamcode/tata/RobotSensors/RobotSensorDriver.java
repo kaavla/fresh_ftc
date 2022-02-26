@@ -40,9 +40,9 @@ public class RobotSensorDriver implements Runnable {
         RobotSensorParams avg_rsp = getAvg();
         int barCodeLoc = 1;
         //check the left front sensors
-        if ((avg_rsp.x_RF < 20) || (avg_rsp.x_RF1 < 20)) {
+        if ((avg_rsp.x_RF < 10) || (avg_rsp.x_RF1 < 10)) { // params were 20
             barCodeLoc = 3;
-        } else if ((avg_rsp.x_LF < 20) || (avg_rsp.x_LF1 < 20)) {
+        } else if ((avg_rsp.x_LF < 10) || (avg_rsp.x_LF1 < 10)) { // params were 20
             barCodeLoc = 2;
         } else {
             barCodeLoc = 1;

@@ -29,25 +29,36 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         RobotSensorParams dsParams = new RobotSensorParams();
 
         while (!isStopRequested() && !isStarted()) {
-            barCodeLoc = sensorDriver.getBarCodeRED();
-            telemetry.addData("Waiting to Start. Element position", barCodeLoc);
-            telemetry.update();
+           // barCodeLoc = sensorDriver.getBarCodeRED();
+           // telemetry.addData("Waiting to Start. Element position", barCodeLoc);
+           // telemetry.update();
         }
 
         waitForStart();
-        telemetry.addData("Started. Element position", barCodeLoc);
-        telemetry.update();
+      //  telemetry.addData("Started. Element position", barCodeLoc);
+       // telemetry.update();
 
         if (isStopRequested()) {
             stopThreads();
             return;
         }
 
+       // Pose2d pose = getTeamMarkerCoord(SideColor.Red, StartPos.Storage, barCodeLoc);
+        //double slideLen = getSlideHeightByLvlInInch(barCodeLoc);
+       // int lvl = barCodeLoc;
+        TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
+                .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        robot.followTrajectorySequence(identifyTeamMarker);
+
+        barCodeLoc = sensorDriver.getBarCodeRED();
+        telemetry.addData("Started. Element position", barCodeLoc);
+        telemetry.update();
+        sleep(1000);
+
         Pose2d pose = getTeamMarkerCoord(SideColor.Red, StartPos.Storage, barCodeLoc);
-        double slideLen = getSlideHeightByLvlInInch(barCodeLoc);
         int lvl = barCodeLoc;
-
-
         TrajectorySequence pickTeamMarker = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
                     //Robot Arm to Collect Pos
@@ -68,19 +79,19 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
                 //.waitSeconds(1.0)
                 .build();
         robot.followTrajectorySequence(pickTeamMarker);
-        sleep(4000);
+        sleep(500);
 
         if (barCodeLoc == 1) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
                     .lineToSplineHeading(new Pose2d(-44, -24, Math.toRadians(180)))
-                    .back(10)
+                    .back(11)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
         if (barCodeLoc == 2) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
                     .lineToSplineHeading(new Pose2d(-44, -24, Math.toRadians(180)))
-                    .back(7)
+                    .back(10)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
@@ -133,7 +144,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
                     //start Carosel motor
                     crDriver.toggleCarousel(true);
                 })
-                .lineToLinearHeading(new Pose2d(-65, -37, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-65, -38, Math.toRadians(270)))//y was -37
 
                 .build();
         robot.followTrajectorySequence(moveToStartCarousel);

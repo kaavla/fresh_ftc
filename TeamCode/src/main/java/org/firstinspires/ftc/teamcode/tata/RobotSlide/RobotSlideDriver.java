@@ -153,28 +153,28 @@ public class RobotSlideDriver implements Runnable {
         if (dir == SlideDirection.OUT) {
             if (lvl == 1) {
                 //level 1
-                moveRobotSlideBy(8, 0);
+                moveRobotSlideBy(5, 0);
 
             } else if (lvl == 2) {
                 //level 2
-                moveRobotSlideBy(9, -0.1);
+                moveRobotSlideBy(12, -0.1);
 
             } else {
                 //level 3
-                moveRobotSlideBy(18, -0.15);
+                moveRobotSlideBy(17, -0.15);
             }
         } else {
             //dir = IN
             if (lvl == 1) {
                 //level 1
-                moveRobotSlideBy(-8, 0);
+                moveRobotSlideBy(-5, 0);
             } else if (lvl == 2) {
                 //level 2
-                moveRobotSlideBy(-9, 0.1);
+                moveRobotSlideBy(-12, 0.1);
 
             } else {
                 //level 3
-                moveRobotSlideBy(-18, 0.15);
+                moveRobotSlideBy(-17, 0.15);
             }
         }
 
