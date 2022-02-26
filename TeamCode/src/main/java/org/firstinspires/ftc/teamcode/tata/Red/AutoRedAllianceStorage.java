@@ -4,9 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.Common.tataMecanumDrive;
+import org.firstinspires.ftc.teamcode.tata.RobotArm.RobotArmDriver;
+import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(name="RED - Auto - AllianceStorage", group="RED")
 public class AutoRedAllianceStorage extends tataAutonomousBase {
@@ -19,10 +23,18 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         Trajectory traj_last;
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
+        int barCodeLoc = 1;
+        RobotSensorParams dsParams = new RobotSensorParams();
+
+        while( !isStopRequested( ) && !isStarted( ) ) {
+            barCodeLoc = sensorDriver.getBarCodeRED();
+            telemetry.addData( "Waiting to Start. Element position", barCodeLoc );
+            telemetry.update();
+        }
+
 
         waitForStart();
-        int barCodeLoc = sensorDriver.getBarCodeRED();
-        telemetry.addData("BarCode", " loc %2d",barCodeLoc);
+        telemetry.addData( "Started. Element position", barCodeLoc );
         telemetry.update();
 
         if (isStopRequested()) {
@@ -30,79 +42,81 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
             return;
         }
 
+        Pose2d pose = getTeamMarkerCoord(SideColor.Red,StartPos.Storage, barCodeLoc);
+        double slideLen = getSlideHeightByLvlInInch(barCodeLoc);
 
-        if (barCodeLoc == 1) {
-            traj1 = robot.trajectoryBuilder(startPose)
-                    .lineToLinearHeading(new Pose2d(-12, -41.5, Math.toRadians(270)))
-                    .build();
-            robot.followTrajectory(traj1);
-            traj_last = traj1;
-            //sleep(1000);
-            slideDriver.moveRobotSlideBy(5, 0);
-            sleep(1000);
+        TrajectorySequence pickTeamMarker = getTrajectorySequenceBuilder()
+                .addTemporalMarker( ( ) -> {
+                    //Robot Arm to Collect Pos
+                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
+                } )
+                .waitSeconds(1)
+                .lineToSplineHeading(pose)
+                .addTemporalMarker( ( ) -> {
+                    slideDriver.moveRobotSlideBy(slideLen, 0);
+                } )
+                .waitSeconds(0.5)
 
-        } else if (barCodeLoc == 2) {
-            traj1 = robot.trajectoryBuilder(startPose)
-                    .lineToLinearHeading(new Pose2d(-12, -43, Math.toRadians(270)))
-                    .build();
-            robot.followTrajectory(traj1);
-            traj_last = traj1;
-            //sleep(1000);
-            slideDriver.moveRobotSlideBy(10, 0);
-            sleep(1000);
+                .forward(3)
+                .addTemporalMarker( ( ) -> {
+                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
+                } )
+                //.waitSeconds(1.0)
 
-        } else {
-            traj1 = robot.trajectoryBuilder(startPose)
-                    .lineToLinearHeading(new Pose2d(-12, -48, Math.toRadians(270)))
-                    .build();
-            robot.followTrajectory(traj1);
-            //sleep(1000);
-            slideDriver.moveRobotSlideBy(19, 0);
-            sleep(2000);
-            traj2 = robot.trajectoryBuilder((traj1.end()))
-                    .back(3, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-            robot.followTrajectory(traj2);
-            traj_last = traj2;
+                .build();
+        robot.followTrajectorySequence(pickTeamMarker);
 
-        }
+
+        TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
+                .lineToSplineHeading(new Pose2d(-44, -24, Math.toRadians(180)))
+                .back(10)
+                .build();
+        robot.followTrajectorySequence(moveToDropGE);
 
         sleep(500);
         slideDriver.dropGameElement();
 
-        //go to carousel
-        traj5 = robot.trajectoryBuilder(traj_last.end())
-                .lineToLinearHeading(new Pose2d(-56, -55, Math.toRadians(270)))
+        TrajectorySequence moveToDropCarousel = getTrajectorySequenceBuilder()
+                .addTemporalMarker( ( ) -> {
+                    //Draw Sides in
+                    slideDriver.moveRobotSlideBy(-1*slideLen, 0);
+
+                } )
+
+                .lineToLinearHeading(new Pose2d(-60, -45, Math.toRadians(270)))
                 .build();
-        robot.followTrajectory(traj5);
+        robot.followTrajectorySequence(moveToDropCarousel);
 
-        if (barCodeLoc == 1) {
-            slideDriver.moveRobotSlideBy(-5, 0);
-        } else if (barCodeLoc == 2) {
-            slideDriver.moveRobotSlideBy(-10, 0);
-        } else {
-            slideDriver.moveRobotSlideBy(-18, 0);
-        }
+        //Correct Robot Orientation
+        imuParams = imuDriver.getRobotImuParams();
+        robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 270));
 
-        traj6 = robot.trajectoryBuilder(traj5.end())
-                .strafeRight(7)
+        //Measure distance from the right hand side wall
+        dsParams = sensorDriver.getRobotSensorParams();
+
+        telemetry.addData( "Distance on Front %2f", dsParams.x_LF );
+        telemetry.addData( "Distance on Right %2f", dsParams.x_RS );
+        telemetry.update();
+
+        sleep(3000);
+
+        TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
+                .strafeRight(dsParams.x_RS - 1)
+                .waitSeconds(0.2)
+                .forward(dsParams.x_LF - 8)  //Carousel if of radius 7.5 inch
+                .addTemporalMarker( ( ) -> {
+                    //start Carosel motor
+                    crDriver.toggleCarousel(true);
+                } )
+                .waitSeconds(4)
+                .addTemporalMarker( ( ) -> {
+                    //start Carosel motor
+                    crDriver.toggleCarousel(true);
+                } )
+                .lineToLinearHeading(new Pose2d(-65, -37, Math.toRadians(270)))
+
                 .build();
-        robot.followTrajectory(traj6);
-        sleep(2000);
-
-        crDriver.toggleCarousel(true);
-        sleep(5000);
-        crDriver.toggleCarousel(true);
-
-//going to the red alliance storage square
-        traj7 = robot.trajectoryBuilder(traj6.end())
-                //.lineToSplineHeading(new Pose2d(-60, -38, Math.toRadians(270)))
-                .back(17, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        robot.followTrajectory(traj7);
-
+        robot.followTrajectorySequence(moveToStartCarousel);
 
         stopThreads();
 

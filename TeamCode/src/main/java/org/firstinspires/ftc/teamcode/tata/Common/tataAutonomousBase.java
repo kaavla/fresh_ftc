@@ -15,9 +15,18 @@ import org.firstinspires.ftc.teamcode.tata.RobotIntake.RobotIntakeDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
 public class tataAutonomousBase extends LinearOpMode {
 
+    public enum SideColor {
+        Red, Blue
+    }
+
+    public enum StartPos {
+        Warehouse, //White Colored Box
+        Storage    //Red or Blue Colored box
+    }
 
     public tataMecanumDrive robot;
     public RobotSensorDriver sensorDriver;
@@ -71,6 +80,99 @@ public class tataAutonomousBase extends LinearOpMode {
         imuDriverThread.start();
 
     }
+
+    public TrajectorySequenceBuilder getTrajectorySequenceBuilder() {
+        return robot.trajectorySequenceBuilder(robot.getPoseEstimate());
+    }
+
+    public double getSlideHeightByLvlInInch(int lvl) {
+        switch (lvl) {
+            case 1:
+                return 8.0;
+            case 2:
+                return 10.0;
+            case 3:
+                return 19.0;
+        }
+        return 0.0;
+    }
+
+    public Pose2d getTeamMarkerCoord(SideColor sc, StartPos sp, int lvl) {
+        Pose2d pose = new Pose2d(0, 0, 0);
+        if (sc == SideColor.Red) {
+            if (sp == StartPos.Storage) {
+                switch (lvl) {
+                    case 1: {
+                        pose = new Pose2d(-45, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 2: {
+                        pose = new Pose2d(-36, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 3: {
+                        pose = new Pose2d(-27, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                }
+            } else {
+                //sp == Warehouse
+                switch (lvl) {
+                    case 1: {
+                        pose = new Pose2d(-44.5, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 2: {
+                        pose = new Pose2d(-36, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 3: {
+                        pose = new Pose2d(-27, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                }
+
+            }
+        } else {
+            //Blue side
+            if (sp == StartPos.Storage) {
+                switch (lvl) {
+                    case 1: {
+                        pose = new Pose2d(-27, 47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 2: {
+                        pose = new Pose2d(-36, 47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 3: {
+                        pose = new Pose2d(-44.5, 47.5, Math.toRadians(90));
+                        break;
+                    }
+                }
+            } else {
+                //sp == Warehouse
+                switch (lvl) {
+                    case 1: {
+                        pose = new Pose2d(-44, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 2: {
+                        pose = new Pose2d(-36, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                    case 3: {
+                        pose = new Pose2d(-27, -47.5, Math.toRadians(90));
+                        break;
+                    }
+                }
+
+            }
+
+        }
+        return pose;
+    }
+
 
     public void stopThreads() {
         sensorDriver.stop();

@@ -77,8 +77,8 @@ public class RobotArmHW {
 
         double pos = 1.0;
 
-        s1ServoCurrPos = 0.5;
-        s2ServoCurrPos = 0.5;
+        s1ServoCurrPos = 0.1;
+        s2ServoCurrPos = 0.9;
         s3ServoCurrPos = 0.0;
 
         //We dont set the init pos here

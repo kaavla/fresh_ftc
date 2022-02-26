@@ -1,14 +1,16 @@
-package org.firstinspires.ftc.teamcode.tata.Red;
+package org.firstinspires.ftc.teamcode.tata.TestCode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
+import org.firstinspires.ftc.teamcode.tata.Common.tataMecanumDrive;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 
-@Autonomous(name = "RED - SHANK2 - AllianceStorage", group = "RED")
-public class SHANK2Test extends tataAutonomousBase {
+@Autonomous(name = "RED - SHANK - AllianceStorage", group = "RED")
+public class SHANKTest extends tataAutonomousBase {
     public Pose2d startPose = new Pose2d(-42.25, -63.5, Math.toRadians(90));
 
     @Override
@@ -42,7 +44,7 @@ public class SHANK2Test extends tataAutonomousBase {
         sleep(1000);
         imuParams = imuDriver.getRobotImuParams();
         //apply correction
-        robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 180));
+        //robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 180));
 
         telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
         telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 180));
@@ -61,7 +63,7 @@ public class SHANK2Test extends tataAutonomousBase {
         sleep(1000);
         imuParams = imuDriver.getRobotImuParams();
         //apply correction
-        robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 270));
+        //robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 270));
         sleep(100);
 
         RobotSensorParams dsParams = sensorDriver.getRobotSensorParams();
