@@ -34,5 +34,12 @@ public interface MeepMeepPath {
 		// new Pose2d( -23.631, 35.506, toRadians( 270 + 45 ) )
 	}
 
+	public static Pose2d getHubPositionX( double angle, double angleOffset, double indent, boolean blueSide ) {
+		double negate = Math.toRadians( angle * -1 );
+		double x = -1*(tileConnector / 2 + tileSize / 2) + Math.cos( negate ) * (hubRadius + indent + robotLength / 2);
+		double y = tileConnector + tileSize + Math.sin( negate ) * (hubRadius + indent + robotLength / 2);
+		return new Pose2d( x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
+		// new Pose2d( -23.631, 35.506, toRadians( 270 + 45 ) )
+	}
 
 }

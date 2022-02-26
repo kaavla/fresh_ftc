@@ -24,8 +24,11 @@ public class testRobotIntake extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            driver.checkGamePad(gamepad1);
-            sleep(50);
+            //driver.checkGamePad(gamepad1);
+            driver.toggleIntake(true);
+            sleep(4000);
+            driver.toggleIntake(true);
+
             idle();
         }
         driver.stop();

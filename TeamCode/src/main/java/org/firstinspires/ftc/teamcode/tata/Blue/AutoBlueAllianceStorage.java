@@ -67,7 +67,8 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 .lineToSplineHeading(pose)
                 .addTemporalMarker(() -> {
                     //slideDriver.moveRobotSlideBy(slideLen, 0);
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    moveSlideToPos(lvl, SlideDirection.OUT);
                 })
                 .waitSeconds(1.0)
 
@@ -110,7 +111,8 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 .addTemporalMarker(() -> {
                     //Draw Sides in
                     //slideDriver.moveRobotSlideBy(-1*slideLen, 0);
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    moveSlideToPos(lvl, SlideDirection.IN);
                 })
 
                 .lineToLinearHeading(new Pose2d(-60, 49, Math.toRadians(90)))
@@ -118,8 +120,8 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
         robot.followTrajectorySequence(moveToDropCarousel);
 
         //Correct Robot Orientation
-        imuParams = imuDriver.getRobotImuParams();
-        robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 90));
+        //imuParams = imuDriver.getRobotImuParams();
+        //robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 90));
 
         //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();

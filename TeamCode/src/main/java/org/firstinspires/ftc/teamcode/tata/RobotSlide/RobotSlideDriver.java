@@ -4,10 +4,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RobotSlideDriver implements Runnable {
-    public enum SlideDirection {
-        IN,
-        OUT
-    }
 
     public RobotSlideHW slideHW = new RobotSlideHW();
 
@@ -149,7 +145,7 @@ public class RobotSlideDriver implements Runnable {
 
     }
 
-    public void moveSlideToDropPos(int lvl, SlideDirection dir) {
+/*    public void moveSlideToDropPos(int lvl, SlideDirection dir) {
         if (dir == SlideDirection.OUT) {
             if (lvl == 1) {
                 //level 1
@@ -181,6 +177,8 @@ public class RobotSlideDriver implements Runnable {
         return;
     }
 
+ */
+
     private void robotSlidePositionUpdate() {
         /*
         if (tiltSlideBoxPos >= 0) {
@@ -198,7 +196,8 @@ public class RobotSlideDriver implements Runnable {
         if (delta_x != 0 || delta_i != 0 ) {
             //Move the robot Arm only for non-zero values of delta_x, delta_y
             slideHW.moveSlideTo(delta_x);
-            slideHW.pullSlideUp(delta_i);
+            //Do not pull Slides up here.
+            //slideHW.pullSlideUp(delta_i);
             delta_x = 0;
             delta_i = 0;
             is_done = true;

@@ -46,7 +46,8 @@ public class SHANK_TEST extends tataAutonomousBase {
         int lvl = barCodeLoc;
 
         //slideDriver.moveRobotSlideBy(5,0);
-        slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+        //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+        moveSlideToPos(lvl, SlideDirection.OUT);
         sleep(4000);
         slideDriver.dropGameElement();
         sleep(1000);

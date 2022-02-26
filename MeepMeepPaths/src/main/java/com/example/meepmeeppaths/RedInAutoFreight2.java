@@ -10,22 +10,22 @@ import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
 
 import java.util.Arrays;
 
-public class BlueInAutoFreight2 implements MeepMeepPath{
+public class RedInAutoFreight2 implements MeepMeepPath{
 
-	double wallPos = 63;
+	double wallPos = -63;
 
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
-		return drive.trajectorySequenceBuilder( new Pose2d( 6, 61, Math.toRadians( 270 ) ) )
+		return drive.trajectorySequenceBuilder( new Pose2d( 6, -61, Math.toRadians( 90 ) ) )
 				.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 70 ), new MecanumVelocityConstraint( 40, 17 ) ) ) )
 
 				// move to dump initial block in designated layer
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( height );
 				} )
-				.setTangent( Math.toRadians( 270 ) )
+				.setTangent( Math.toRadians( 90 ) )
 				//.splineToLinearHeading( MeepMeepPath.getHubPositionX( -45, 90, 8, true ), Math.toRadians( 0  ) )
-				.splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 300 ) )
+				.splineToLinearHeading( new Pose2d( -4.22,-42.2 , Math.toRadians(-67.5) ), Math.toRadians( 90) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
@@ -33,13 +33,13 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.waitSeconds( 0.8 )
 
 				// move to grab block 1
-				.setTangent( Math.toRadians( 90 + 0) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 2 ) ), Math.toRadians( 0) )
+				.setTangent( Math.toRadians( 270) )
+				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 0) )
 				//.addTemporalMarker( ( ) -> {
 //				//	robot.intake.setPower( 0.6 );
 				//} )
-				.lineToLinearHeading(new Pose2d(48, wallPos+1, Math.toRadians(0)))
-				.lineToLinearHeading(new Pose2d(18, wallPos+1, Math.toRadians(0)))
+				.lineToLinearHeading(new Pose2d(48, wallPos-1, Math.toRadians(0)))
+				.lineToLinearHeading(new Pose2d(18, wallPos-1, Math.toRadians(0)))
 				//.lineToConstantHeading( new Vector2d( 48, wallPos ) ) // 48
 				//.lineToConstantHeading( new Vector2d( 18, wallPos ) )
 				.addTemporalMarker( ( ) -> {
@@ -50,8 +50,8 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.setTangent( Math.toRadians( 200) )
-				.splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+				.setTangent( Math.toRadians( 160) )
+				.splineToLinearHeading( new Pose2d( -4.22,-42.2 , Math.toRadians(-67.5) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
@@ -59,7 +59,7 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.waitSeconds( 0.8 )
 
 				// move to grab block 2
-				.setTangent( Math.toRadians( 90 + 0) )
+				.setTangent( Math.toRadians( 270) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 2 ) ), Math.toRadians( 10) )
 				.addTemporalMarker( ( ) -> {
 //					robot.intake.setPower( 0.6 );
@@ -74,8 +74,8 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.setTangent( Math.toRadians( 200) )
-				.splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+				.setTangent( Math.toRadians( 160) )
+				.splineToLinearHeading( new Pose2d( -4.22,-42.2 , Math.toRadians(-67.5) ), Math.toRadians( 90) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
@@ -83,7 +83,7 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.waitSeconds( 0.8 )
 
 				// move to grab block 3
-				.setTangent( Math.toRadians( 90 + 0) )
+				.setTangent( Math.toRadians( 270) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 2 ) ), Math.toRadians( 10) )
 				.addTemporalMarker( ( ) -> {
 //					robot.intake.setPower( 0.6 );
@@ -98,8 +98,8 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.setTangent( Math.toRadians( 200) )
-				.splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+				.setTangent( Math.toRadians( 160) )
+				.splineToLinearHeading( new Pose2d( -4.22,-42.2 , Math.toRadians(-67.5) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
@@ -107,7 +107,7 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 				.waitSeconds( 0.8 )
 
 				// Park
-				.setTangent( Math.toRadians( 90 + 0) )
+				.setTangent( Math.toRadians( 270) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 2 ) ), Math.toRadians( 10) )
 				.addTemporalMarker( ( ) -> {
 //					robot.intake.setPower( 0.6 );

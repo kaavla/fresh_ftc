@@ -64,7 +64,8 @@ public class AutoRedWarehouse extends tataAutonomousBase {
                 .forward(10)
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    moveSlideToPos(lvl, SlideDirection.OUT);
 
                 } )
 
@@ -73,7 +74,8 @@ public class AutoRedWarehouse extends tataAutonomousBase {
                 //angle -67.5 originally
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
-                     slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                     moveSlideToPos(lvl, SlideDirection.IN);
                 } )
                 .waitSeconds( 0.5 )
                 .lineToSplineHeading( new Pose2d( 12, -wallPos, Math.toRadians( 0 ) ))
@@ -81,11 +83,11 @@ public class AutoRedWarehouse extends tataAutonomousBase {
         robot.followTrajectorySequence(dropPreloadedGE);
 
         //Correct Robot Orientation
-        imuParams = imuDriver.getRobotImuParams();
+        //imuParams = imuDriver.getRobotImuParams();
 
         //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();
-        telemetry.addData("imu angle %2f", imuParams.correctedHeading);
+        //telemetry.addData("imu angle %2f", imuParams.correctedHeading);
         telemetry.addData("Distance on Front %2f", dsParams.x_LS);
         telemetry.update();
         sleep(500);
@@ -107,7 +109,7 @@ public class AutoRedWarehouse extends tataAutonomousBase {
 
         //Add error corrections for imu + distance from wall
         //Correct Robot Orientation
-        imuParams = imuDriver.getRobotImuParams();
+        //imuParams = imuDriver.getRobotImuParams();
 
         //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();
@@ -126,10 +128,12 @@ public class AutoRedWarehouse extends tataAutonomousBase {
                 .lineToSplineHeading( new Pose2d(0, -42, Math.toRadians(-57.5)) ) //67.5
                 //.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
-                    slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.OUT);
+                    //slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.OUT);
+                    moveSlideToPos(3,SlideDirection.OUT);
                     slideDriver.dropGameElement();
-                    slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.IN);
-//					robot.dumpBucket( );
+                    //slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.IN);
+					moveSlideToPos(3,SlideDirection.IN);
+//                    robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
                 } )
                 .waitSeconds( 0.8 )

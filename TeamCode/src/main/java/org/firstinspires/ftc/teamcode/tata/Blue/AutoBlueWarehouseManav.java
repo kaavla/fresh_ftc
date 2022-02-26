@@ -52,7 +52,8 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .forward(10)
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    moveSlideToPos(lvl, SlideDirection.OUT);
 
                 } )
 
@@ -60,7 +61,8 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .lineToSplineHeading( new Pose2d(0, 35, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    moveSlideToPos(lvl, SlideDirection.IN);
                 } )
                 .waitSeconds( 1 )
                 .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
@@ -68,11 +70,11 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
         robot.followTrajectorySequence(dropPreloadedGE);
 
         //Correct Robot Orientation
-        imuParams = imuDriver.getRobotImuParams();
+        //imuParams = imuDriver.getRobotImuParams();
 
         //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();
-        telemetry.addData("imu angle %2f", imuParams.correctedHeading);
+        //telemetry.addData("imu angle %2f", imuParams.correctedHeading);
         telemetry.addData("Distance on Front %2f", dsParams.x_LS);
         telemetry.update();
         sleep(500);
@@ -95,7 +97,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
 
         //Add error corrections for imu + distance from wall
         //Correct Robot Orientation
-        imuParams = imuDriver.getRobotImuParams();
+        //imuParams = imuDriver.getRobotImuParams();
 
         //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();
@@ -115,9 +117,11 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 //upsidy do
                 //.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    moveSlideToPos(lvl, SlideDirection.OUT);
                     slideDriver.dropGameElement();
-                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    moveSlideToPos(lvl, SlideDirection.IN);
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
                 } )

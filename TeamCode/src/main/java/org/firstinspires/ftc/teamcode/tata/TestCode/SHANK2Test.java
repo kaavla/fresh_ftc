@@ -40,42 +40,45 @@ public class SHANK2Test extends tataAutonomousBase {
         traj_last = traj1;
         //Check correct
         sleep(1000);
-        imuParams = imuDriver.getRobotImuParams();
+        //imuParams = imuDriver.getRobotImuParams();
         //apply correction
-        robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 180));
+        //robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 180));
 
-        telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
-        telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 180));
+        //telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
+        //telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 180));
         telemetry.update();
 
         sleep(3000);
 
         //go to carousel
+        /*
         traj5 = robot.trajectoryBuilder(traj_last.end().plus(new Pose2d(0, 0, -1*Math.toRadians(imuParams.correctedHeading - 180))))
                 .lineToLinearHeading(new Pose2d(-50, -50, Math.toRadians(270)))
                 .build();
         robot.followTrajectory(traj5);
+
+         */
         traj_last = traj1;
 
         //Check correct
         sleep(1000);
-        imuParams = imuDriver.getRobotImuParams();
+        //imuParams = imuDriver.getRobotImuParams();
         //apply correction
-        robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 270));
+        //robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 270));
         sleep(100);
 
         RobotSensorParams dsParams = sensorDriver.getRobotSensorParams();
 
-        telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
-        telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 270));
+        //telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
+        //telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 270));
         telemetry.addData("x_LF:", "%2f:%2f deg ", dsParams.x_LF, dsParams.x_LF1);
         telemetry.update();
 
         sleep(6000);
         dsParams = sensorDriver.getRobotSensorParams();
-        imuParams = imuDriver.getRobotImuParams();
-        telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
-        telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 270));
+        //imuParams = imuDriver.getRobotImuParams();
+        //telemetry.addData("Rel:", "%2f deg ", imuParams.correctedHeading);
+        //telemetry.addData("diff:", "%2f deg ", Math.abs(imuParams.correctedHeading - 270));
         telemetry.addData("x_LF:", "%2f:%2f deg ", dsParams.x_LF, dsParams.x_LF1);
         telemetry.update();
         sleep(6000);

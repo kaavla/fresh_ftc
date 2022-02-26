@@ -13,15 +13,18 @@ public class RobotLinearActuatorHW {
     private Servo LAS = null; //Linear actuator
 
     private double curr_inclination = 0.9;
+    private double correction = 0.0;
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap, Side sd) {
 
         if (sd == Side.LEFT) {
             LAS = ahwMap.get(Servo.class, "SLL0");
+            correction = 0.0;
         } else {
             //Right
             LAS = ahwMap.get(Servo.class, "SLL1");
+            correction = 0.012;
         }
         LAS.setPosition(curr_inclination);
 
@@ -36,8 +39,11 @@ public class RobotLinearActuatorHW {
             //Min inclination reached
             return;
         }
-
-        curr_inclination = curr_inclination + delta;
+        if (delta > 0) {
+            curr_inclination = curr_inclination + delta + correction;
+        } else {
+            curr_inclination = curr_inclination + delta - correction;
+        }
         LAS.setPosition(curr_inclination);
     }
 
