@@ -28,15 +28,16 @@ public class MeepMeepPaths {
 		//BOutDuckTest rt = new BOutDuckTest();
 		//PositionGrapherTest rt = new PositionGrapherTest();
 		//TechnovaKillerAuto rt = new TechnovaKillerAuto();
-		ShankRed1 rt = new ShankRed1();
+		//ShankRed1 rt = new ShankRed1();
 		//ShankBlue1 rt = new ShankBlue1();
+		ShankBlue2 rt = new ShankBlue2();
 		MeepMeep mm = new MeepMeep( 700 )
 				.setBackground( MeepMeep.Background.FIELD_FREIGHT_FRENZY )
 				.setTheme( new ColorSchemeRedDark() )
 //				.set
 				.setBackgroundAlpha( 1f )
 				.setBotDimensions( robotWidth, robotLength )
-				.setConstraints( 30, 30, Math.toRadians( 60 ), Math.toRadians( 60 ), 17 )
+				.setConstraints( 40, 40, 3, 4, 14.1 )
 				.followTrajectorySequence( drive -> {
 					//try {
 						return rt.getTrajectorySequence( drive );

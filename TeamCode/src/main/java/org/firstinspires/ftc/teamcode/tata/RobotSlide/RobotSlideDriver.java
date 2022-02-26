@@ -4,9 +4,15 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RobotSlideDriver implements Runnable {
+    public enum SlideDirection {
+        IN,
+        OUT
+    }
+
     public RobotSlideHW slideHW = new RobotSlideHW();
 
     private double delta_x = 0.0;
+    private double delta_i = 0.0;
     private boolean is_done = true;
     private double tiltSlideBoxPos = -1.0;
     private double rotateSlideBoxArmPos = -1.0;
@@ -143,7 +149,40 @@ public class RobotSlideDriver implements Runnable {
 
     }
 
+    public void moveSlideToDropPos(int lvl, SlideDirection dir) {
+        if (dir == SlideDirection.OUT) {
+            if (lvl == 1) {
+                //level 1
+                moveRobotSlideBy(8, 0);
+
+            } else if (lvl == 2) {
+                //level 2
+                moveRobotSlideBy(9, -0.1);
+
+            } else {
+                //level 3
+                moveRobotSlideBy(18, -0.15);
+            }
+        } else {
+            //dir = IN
+            if (lvl == 1) {
+                //level 1
+                moveRobotSlideBy(-8, 0);
+            } else if (lvl == 2) {
+                //level 2
+                moveRobotSlideBy(-9, 0.1);
+
+            } else {
+                //level 3
+                moveRobotSlideBy(-18, 0.15);
+            }
+        }
+
+        return;
+    }
+
     private void robotSlidePositionUpdate() {
+        /*
         if (tiltSlideBoxPos >= 0) {
             slideHW.setSlideServoCurrPos(0, tiltSlideBoxPos);
             tiltSlideBoxPos = -1.0;
@@ -154,12 +193,14 @@ public class RobotSlideDriver implements Runnable {
             rotateSlideBoxArmPos = -1.0;
         }
 
-        if (delta_x != 0) {
+         */
+
+        if (delta_x != 0 || delta_i != 0 ) {
             //Move the robot Arm only for non-zero values of delta_x, delta_y
             slideHW.moveSlideTo(delta_x);
-
-            //reset delta_x/delta_y state
+            slideHW.pullSlideUp(delta_i);
             delta_x = 0;
+            delta_i = 0;
             is_done = true;
         }
     }
@@ -178,7 +219,7 @@ public class RobotSlideDriver implements Runnable {
     public void moveRobotSlideBy(double dx, double di) {
         if (is_done == true) {
             delta_x = dx;
-            //delta_i = di;
+            delta_i = di;
             is_done = false;
         }
     }

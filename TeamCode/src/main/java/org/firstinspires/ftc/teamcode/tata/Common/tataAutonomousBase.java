@@ -92,7 +92,7 @@ public class tataAutonomousBase extends LinearOpMode {
             case 2:
                 return 10.0;
             case 3:
-                return 19.0;
+                return 21.0;
         }
         return 0.0;
     }
@@ -138,15 +138,15 @@ public class tataAutonomousBase extends LinearOpMode {
             if (sp == StartPos.Storage) {
                 switch (lvl) {
                     case 1: {
-                        pose = new Pose2d(-27, 47.5, Math.toRadians(90));
+                        pose = new Pose2d(-27, 47.5, Math.toRadians(270));
                         break;
                     }
                     case 2: {
-                        pose = new Pose2d(-36, 47.5, Math.toRadians(90));
+                        pose = new Pose2d(-36, 47.5, Math.toRadians(270));
                         break;
                     }
                     case 3: {
-                        pose = new Pose2d(-44.5, 47.5, Math.toRadians(90));
+                        pose = new Pose2d(-45, 47.5, Math.toRadians(270));
                         break;
                     }
                 }
@@ -154,15 +154,15 @@ public class tataAutonomousBase extends LinearOpMode {
                 //sp == Warehouse
                 switch (lvl) {
                     case 1: {
-                        pose = new Pose2d(-44, -47.5, Math.toRadians(90));
+                        pose = new Pose2d(4, 36, Math.toRadians(90));
                         break;
                     }
                     case 2: {
-                        pose = new Pose2d(-36, -47.5, Math.toRadians(90));
+                        pose = new Pose2d(8, 36, Math.toRadians(90));
                         break;
                     }
                     case 3: {
-                        pose = new Pose2d(-27, -47.5, Math.toRadians(90));
+                        pose = new Pose2d(12, 36, Math.toRadians(90));
                         break;
                     }
                 }

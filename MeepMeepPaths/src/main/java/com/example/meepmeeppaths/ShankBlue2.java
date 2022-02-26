@@ -10,22 +10,18 @@ import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
 
 import java.util.Arrays;
 
-public class BlueInAutoFreight2 implements MeepMeepPath{
+public class ShankBlue2 implements MeepMeepPath{
 
-	double wallPos = 65;
+	double wallPos = 63;
 
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
 		return drive.trajectorySequenceBuilder( new Pose2d( 0, 61, Math.toRadians( 270 ) ) )
-				.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 90 ), new MecanumVelocityConstraint( 60, 17 ) ) ) )
-
-				// move to dump initial block in designated layer
+				.forward(6)
 				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( height );
+                    //robot.liftToShippingHubHeight( height );
 				} )
-				.setTangent( Math.toRadians( 180 ) )
-				//.splineToLinearHeading( MeepMeepPath.getHubPosition( -22.5, 270, 1.5, true ), Math.toRadians( 270 - 22.5 ) )
-				.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(55)) )
+				.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );

@@ -86,7 +86,6 @@ public class RobotSlideHW {
         SLL1.setPosition(curr_inclination);
 
         curr_slide_arm_in_inch = 0.0;
-        curr_inclination = 0.9;
 
         box_curr_pos_L = 0.5;
         box_curr_pos_R = 0.5;
@@ -145,25 +144,37 @@ public class RobotSlideHW {
     }
 
 
-    public void pullSlideUp(double delta, boolean reverse) {
+    public void pullSlideUp(double delta) {
+        //double temp = curr_inclination;
         if (curr_inclination + delta > 0.9) {
             //Max inclination reached
             return;
         }
-        if (curr_inclination - delta < 0.4) {
+        if (curr_inclination + delta < 0.6) {
             //Min inclination reached
             return;
         }
 
-        if (reverse == false) {
-            //Slides up. Initial pos is 0.9
-            curr_inclination = curr_inclination - delta;
-        } else {
-            //Slides down
-            curr_inclination = curr_inclination + delta;
+        curr_inclination = curr_inclination + delta;
+        SLL0.setPosition(curr_inclination);
+        //compensate the box slope for the slide tilt
+        //when slide tilt is 0.9, box is horizonal
+        //when slide til is 0.8, box slope should be changed.
+        setSlideServoCurrPos(0, delta/2);
+
+        SLL0.setPosition(curr_inclination);
+        SLL1.setPosition(curr_inclination);
+
+/*
+        for (int i = 0; i < 4; ++i) {
+            temp = temp + delta/4;
+            SLL1.setPosition(temp);
+            SLL0.setPosition(temp);
+
         }
-        SLS0L.setPosition(curr_inclination);
-        SLS0R.setPosition(curr_inclination);
+
+ */
+        RobotLog.ii("SL124", "pull Slide Up Curr Inc %2f", curr_inclination);
 
     }
 

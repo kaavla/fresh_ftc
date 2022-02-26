@@ -54,10 +54,14 @@ public class RobotCaroselDriver implements Runnable{
     }
 
     public void checkGamePad(Gamepad gp) {
-        if (gp.left_trigger > 0.5) {
+        if (gp.b) {
             toggleCarousel(false);
-        } else if (gp.right_trigger > 0.5) {
-            toggleCarousel(true);
+        } else if (gp.x) {
+            toggleCarousel(false);
+        } else if (gp.y) {
+            toggleCarousel(false);
+        } else if (gp.a) {
+            toggleCarousel(false);
         }
 
     }

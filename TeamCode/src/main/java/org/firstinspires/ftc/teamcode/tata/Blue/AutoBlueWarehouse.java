@@ -1,239 +1,249 @@
 package org.firstinspires.ftc.teamcode.tata.Blue;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+//import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
-import org.firstinspires.ftc.teamcode.tata.Common.tataMecanumDrive;
+import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(group = "robot")
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.*;
+//import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
+import java.util.*;
+
+
+
+
+@Autonomous(name="BLUE - Auto - Warehouse", group="BLUE")
 public class AutoBlueWarehouse extends tataAutonomousBase {
-    public Pose2d startPose = new Pose2d(18, -63.5, Math.toRadians(90)); //change x
+
+    //prob change later idk
+    double wallPos = 63;
+
+
+    //start position
+    public Pose2d startPose = new Pose2d(6, 61, Math.toRadians(270));
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Trajectory traj0, traj1, traj2, traj3, traj4, traj5, traj6, traj7, traj8, traj9, traj10;
-        Trajectory traj_last;
-//        init(hardwareMap);
-//
-//        robot.setPoseEstimate(startPose);
-//
-//        waitForStart();
-//
-//        if (isStopRequested()) return;
-//
-//        //armDriver.initArmPos(0);
-//
-///*
-//        sleep(1000);
-//        slideDriver.moveRobotSlideBy(20, 0);
-//        //slideDriver.slideHW.motorSetRawSpeed(-0.95);
-//        sleep(2000);
-//        slideDriver.dropGameElement();
-//        sleep(2000);
-//        slideDriver.moveRobotSlideBy(-20, 0);
-//        //slideDriver.slideHW.motorSetRawSpeed(0.95);
-//        sleep(3000);
-//
-// */
-//
-//        traj1 = robot.trajectoryBuilder(startPose)
-//                .back(16)
-//                .build();
-//        robot.followTrajectory(traj1);
-//        sleep(500);
-//        params = sensorDriver.getRobotSensorParams();
-//
-//        int bar_code_pos = -1;
-//
-//        //Try 1st bar code  position
-//        if (params.x_LR < 5) {
-//            bar_code_pos = 3;
-//            //pick up team marker
-//        }
-//        traj_last = traj1;
-//        //try 2nd if bar code not yet found
-//        if (bar_code_pos == -1) {
-//            //Move to the left 2 inches
-//            traj2 = robot.trajectoryBuilder(traj_last.end())
-//                    .strafeRight(5)
-//                    .build();
-//            robot.followTrajectory(traj2);
-//            traj_last = traj2;
-//            params = sensorDriver.getRobotSensorParams();
-//            sleep(500);
-//            if (params.x_RR < 5) {
-//                bar_code_pos = 2;
-//                //pick up team marker
-//            }
-//        }
-//
-//        //try 3rd if bar code not yet found
-//        if (bar_code_pos == -1) {
-//            //Move to the left 2 inches
-//            traj3 = robot.trajectoryBuilder(traj_last.end())
-//                    .strafeRight(5)
-//                    .build();
-//            robot.followTrajectory(traj3);
-//            traj_last = traj3;
-//            params = sensorDriver.getRobotSensorParams();
-//            bar_code_pos = 1;
-//            //pick up team marker
-//
-//        }
-//
-//        telemetry.addData("FOUND", " Found Marker  %2d", bar_code_pos);
-//        telemetry.update();
-//        sleep(1000);
-//
 
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
+        int barCodeLoc = 1;
+        RobotSensorParams dsParams = new RobotSensorParams();
+
+        while( !isStopRequested( ) && !isStarted( ) ) {
+            barCodeLoc = sensorDriver.getBarCodeBLUE();
+            telemetry.addData( "Waiting to Start. Element position", barCodeLoc );
+            telemetry.update();
+        }
+
 
         waitForStart();
-
+        telemetry.addData( "Started. Element position", barCodeLoc );
+        telemetry.update();
 
         if (isStopRequested()) {
             stopThreads();
             return;
         }
-        int barCodeLoc = sensorDriver.getBarCodeBLUE();
-        telemetry.addData("BarCode", " loc %2d",barCodeLoc);
-        telemetry.update();
-        sleep(1000);
-        traj0 = robot.trajectoryBuilder((startPose))
-                .forward(10, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        robot.followTrajectory(traj0);
 
-        if (barCodeLoc == 1) {
-            traj1 = robot.trajectoryBuilder((traj0.end()))
-                    .lineToLinearHeading(new Pose2d(-12, 41.5, Math.toRadians(90)))
-                    .build();
-            robot.followTrajectory(traj1);
-            traj_last = traj1;
-            //sleep(1000);
-            slideDriver.moveRobotSlideBy(5, 0);
-            sleep(1000);
+        TrajectorySequence doTheThings = getTrajectorySequenceBuilder()
+//            return drive.trajectorySequenceBuilder( new Pose2d( 0, 61, Math.toRadians( 270 ) ) )
+                    .forward(6)
+                    .addTemporalMarker( ( ) -> {
+                        //robot.liftToShippingHubHeight( height );
+                    } )
+                    .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.dumpBucket( );
+//					robot.lift.setDefaultHeightVel( 1200 );
+                    } )
 
-        } else if (barCodeLoc == 2) {
-            traj1 = robot.trajectoryBuilder((traj0.end()))
-                    .lineToLinearHeading(new Pose2d(-12, 43, Math.toRadians(90)))
-                    .build();
-            robot.followTrajectory(traj1);
-            traj_last = traj1;
-            //sleep(1000);
-            slideDriver.moveRobotSlideBy(10, 0);
-            sleep(1000);
+                    .waitSeconds( 0.8 )
 
-        } else {
-            traj1 = robot.trajectoryBuilder(traj0.end())
-                    .lineToLinearHeading(new Pose2d(-12, 50, Math.toRadians(90)))
-                    .build();
-            robot.followTrajectory(traj1);
-            //sleep(1000);
-            slideDriver.moveRobotSlideBy(19, 0);
-            sleep(2000);
-            traj2 = robot.trajectoryBuilder((traj1.end()))
-                    .back(3, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-            robot.followTrajectory(traj2);
-            traj_last = traj2;
+                    // move to grab block 1
+                    .setTangent( Math.toRadians( 90 ) )
+                    //.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+                    .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
+                    .addTemporalMarker( ( ) -> {
+//					robot.intake.setPower( 0.6 );
+                    } )
+                    .lineToConstantHeading( new Vector2d( 48, wallPos ) ) // 48
+                    .lineToConstantHeading( new Vector2d( 12, wallPos ) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.intake.setPower( 0 );
+                    } )
+
+                    // move to dump block 1 in the top layer
+                    .addTemporalMarker( ( ) -> {
+//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+                    } )
+                    //.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
+                    //.lineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ) )
+                    .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.dumpBucket( );
+//					robot.lift.setDefaultHeightVel( 1200 );
+                    } )
+                    .waitSeconds( 0.8 )
+
+                    // move to grab block 2
+                    .setTangent( Math.toRadians( 90 ) )
+                    //.splineToSplineHeading( new Pose2d( 18/*49*/, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+                    .lineToSplineHeading( new Pose2d( 12/*49*/, wallPos, Math.toRadians( 0 ) ))
+                    .addTemporalMarker( ( ) -> {
+//					robot.intake.setPower( 0.6 );
+                    } )
+                    .lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 53
+                    .lineToConstantHeading( new Vector2d( 12, wallPos ) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.intake.setPower( 0 );
+                    } )
+
+                    // move to dump block 2 in the top layer
+                    .addTemporalMarker( ( ) -> {
+//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+                    } )
+                    //.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
+                    //.lineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ))
+                    .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.dumpBucket( );
+//					robot.lift.setDefaultHeightVel( 1200 );
+                    } )
+                    .waitSeconds( 0.8 )
+
+                    // move to grab block 3
+                    .setTangent( Math.toRadians( 90 ) )
+                    //.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+                    .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
+                    .addTemporalMarker( ( ) -> {
+//					robot.intake.setPower( 0.6 );
+                    } )
+                    .lineToConstantHeading( new Vector2d( 52, wallPos ) ) // 50
+                    .lineToConstantHeading( new Vector2d( 12, wallPos ) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.intake.setPower( 0 );
+                    } )
+
+                    // move to dump block 3 in the top layer
+                    .addTemporalMarker( ( ) -> {
+//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+                    } )
+                    //.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
+                    //.lineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ))
+                    .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                    .addTemporalMarker( ( ) -> {
+//					robot.dumpBucket( );
+//					robot.lift.setDefaultHeightVel( 1200 );
+                    } )
+                    .addTemporalMarker( ( ) -> {
+//					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
+//					robot.odometryLift.liftOdometry( );
+                    } )
+                    .waitSeconds( 0.8 )
+
+                    // turn towards the
+                    .turn( Math.toRadians( 110 ) )
+                    /*// move to barrier to park
+                    .setTangent( Math.toRadians( 90 ) )
+                    .splineToSplineHeading( new Pose2d( 11.5, 44, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+                    .lineToConstantHeading( new Vector2d( 62, 44 ) )*/
+                    .build( );
+
+
+        robot.followTrajectorySequence(doTheThings);
+
 
         }
-        //robot.turn(Math.toRadians(220));
-        sleep(500);
-        slideDriver.dropGameElement();
+       /* Pose2d pose = getTeamMarkerCoord(SideColor.Blue,StartPos.Warehouse, barCodeLoc);
+        double slideLen = getSlideHeightByLvlInInch(barCodeLoc);
 
+        TrajectorySequence pickTeamMarker = getTrajectorySequenceBuilder()
+                .addTemporalMarker( ( ) -> {
+                    //Robot Arm to Collect Pos
+                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
+                    telemetry.addData("moving arm", "line51");
+                } )
+                .waitSeconds(3)
+                .lineToSplineHeading(pose)
+                .addTemporalMarker( ( ) -> {
+                    slideDriver.moveRobotSlideBy(slideLen, 0);
+                } )
+                .waitSeconds(0.5)
+//picking up team marker
+                .forward(3)
+                .addTemporalMarker( ( ) -> {
+                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
+                } )
+                //.waitSeconds(1.0)
 
-        //move near Alliance Hub (-12, -24)
-////        traj4 = robot.trajectoryBuilder(traj_last.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-////                //.lineToSplineHeading(new Pose2d(4, -48, Math.toRadians(300)))
-////                .build();
-////        robot.followTrajectory(traj4);
-
-//        sleep(1000);
-//        slideDriver.moveRobotSlideBy(20, 0);
-//        //slideDriver.slideHW.motorSetRawSpeed(-0.95);
-//        sleep(2000);
-//        slideDriver.dropGameElement();
-//        sleep(1000);
-//        slideDriver.moveRobotSlideBy(-20, 0);
-//        //slideDriver.slideHW.motorSetRawSpeed(0.95);
-//        sleep(500);
-//        //slideDriver.stop();
-
-
-        //Extend the slide and drop the game element
-        //retract the slide
-        //inTakeDriver.toggleIntake(true);
-
-        traj5 = robot.trajectoryBuilder(traj_last.end().plus(new Pose2d(0, 0, Math.toRadians(0))))
-                .lineToSplineHeading(new Pose2d(18, 62, Math.toRadians(100)))
                 .build();
-        robot.followTrajectory(traj5);
+        robot.followTrajectorySequence(pickTeamMarker);
 
-        sleep(1000);
 //
-//        if (barCodeLoc == 1) {
-//            slideDriver.moveRobotSlideBy(-5, 0);
-//        } else if (barCodeLoc == 2) {
-//            slideDriver.moveRobotSlideBy(-10, 0);
-//        } else {
-//            slideDriver.moveRobotSlideBy(-18, 0);
-//        }
+        TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
+                .lineToSplineHeading(new Pose2d(11.5, 24, Math.toRadians(0)))
+                .waitSeconds(5.0)
+                .back(10)
+                .build();
+        robot.followTrajectorySequence(moveToDropGE);
 
         sleep(500);
-        traj6 = robot.trajectoryBuilder(traj5.end())
-                .forward(36)
-                .build();
-        robot.followTrajectory(traj6);
-        sleep(500);
-        //inTakeDriver.stop();
-/*
-         traj7 = robot.trajectoryBuilder(traj6.end())
-                .back(28)
-                .build();
-        robot.followTrajectory(traj7);
-
-        traj8 = robot.trajectoryBuilder(traj7.end())
-                .lineToSplineHeading(new Pose2d(4, -48, Math.toRadians(310)))
-                .build();
-        robot.followTrajectory(traj8);
-
-
-        //sleep(1000);
-        slideDriver.moveRobotSlideBy(20, 0);
-        //slideDriver.slideHW.motorSetRawSpeed(-0.95);
-        //sleep(2000);
         slideDriver.dropGameElement();
-        sleep(500);
-        slideDriver.moveRobotSlideBy(-20, 0);
-        //slideDriver.slideHW.motorSetRawSpeed(0.95);
-        sleep(500);
-        //slideDriver.stop();
 
-        traj9 = robot.trajectoryBuilder(traj8.end())
-                .lineToSplineHeading(new Pose2d(18, -62, Math.toRadians(10)))
-                .build();
-        robot.followTrajectory(traj9);
+//        TrajectorySequence moveToDropCarousel = getTrajectorySequenceBuilder()
+//                .addTemporalMarker( ( ) -> {
+//                    //Draw Slides in
+//                    slideDriver.moveRobotSlideBy(-1*slideLen, 0);
+//
+//                } )
+//
+//                .lineToLinearHeading(new Pose2d(-60, 45, Math.toRadians(90)))
+//                .build();
+//        robot.followTrajectorySequence(moveToDropCarousel);
 
-        traj10 = robot.trajectoryBuilder(traj9.end())
-                .forward(28)
-                .build();
-        robot.followTrajectory(traj10);
-        sleep(500);
-        inTakeDriver.stop();
+        //Correct Robot Orientation
+        imuParams = imuDriver.getRobotImuParams();
+        robot.turn(-1*Math.toRadians(imuParams.correctedHeading - 90));
 
- */
+        //Measure distance from the right hand side wall
+        dsParams = sensorDriver.getRobotSensorParams();
 
+        telemetry.addData( "Distance on Front %2f", dsParams.x_RF );
+        telemetry.addData( "Distance on Right %2f", dsParams.x_LS );
+        telemetry.update();
 
-        stopThreads();
+        sleep(3000);
 
+//        TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
+//                .strafeLeft(dsParams.x_LS - 1)
+//                .waitSeconds(0.2)
+//                .forward(dsParams.x_RF - 8)  //Carousel if of radius 7.5 inch
+//                .addTemporalMarker( ( ) -> {
+//                    //start Carosel motor
+//                    crDriver.toggleCarousel(true);
+//                } )
+//                .waitSeconds(4)
+//                .addTemporalMarker( ( ) -> {
+//                    //start Carosel motor
+//                    crDriver.toggleCarousel(true);
+//                } )
+//                .lineToLinearHeading(new Pose2d(0, 63.5, Math.toRadians(0)))
+//                .lineToLinearHeading(new Pose2d(48, 63.5, Math.toRadians(0)))
+//
+//                .build();
+//        robot.followTrajectorySequence(moveToStartCarousel);
+
+        stopThreads(); */
 
     }
-}
+
+
+
+
