@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -51,6 +52,8 @@ public class RobotImuHW {
         if (correction < 0) {
             correction = 360 + correction;
         }
+        RobotLog.ii("SHANK", "Imu Init %2f:%2f:%2f", initAngle, refAngle, correction);
+
     }
 
     public double readImu(){

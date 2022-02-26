@@ -72,16 +72,25 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
 
                 //Grab Block 1 Start ////////////////////////////
                 .setTangent( Math.toRadians( 90) )
-                .splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
-                .waitSeconds(0.2)
-                .turn(Math.toRadians(correctOrientationUsingImu(0)))
-                .waitSeconds(2)
-                .strafeLeft( getDistanceFromWall(SideColor.Blue))
+                .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+
+                .build();
+        robot.followTrajectorySequence(dropPreloadedGE);
+
+        double headingCorrection = correctOrientationUsingImu(0);
+
+        //Get Block #1
+        TrajectorySequence dropPreloadedGE1 = getTrajectorySequenceBuilder()
+                .turn(Math.toRadians(headingCorrection))
+                .waitSeconds(0.3)
+                .strafeLeft(1)
+
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true);
                 } )
                 .lineToConstantHeading( new Vector2d( 48, wallPos ) ) // 48
-                .lineToConstantHeading( new Vector2d( 18, wallPos ) )
+                .strafeLeft(1)
+                .lineToConstantHeading( new Vector2d( 12, wallPos ) )
                 .addTemporalMarker( ( ) -> {
                     //stop intake
                     inTakeDriver.toggleIntake(true);
@@ -104,20 +113,26 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
                     moveSlideToPos(lvl, SlideDirection.IN);
                 } )
-                //Grab Block 1 End ////////////////////////////
 
-                //Grab Block 2 Start ////////////////////////////
                 .setTangent( Math.toRadians( 90) )
-                .splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
-                .waitSeconds(0.2)
-                .turn(Math.toRadians(correctOrientationUsingImu(0)))
-                .waitSeconds(2)
-                .strafeLeft( getDistanceFromWall(SideColor.Blue))
+                .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                .build();
+        robot.followTrajectorySequence(dropPreloadedGE1);
+
+
+        headingCorrection = correctOrientationUsingImu(0);
+        //Get Block 2
+        TrajectorySequence dropPreloadedGE2 = getTrajectorySequenceBuilder()
+                .turn(Math.toRadians(headingCorrection))
+                .waitSeconds(0.3)
+                .strafeLeft(0.5)
+
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true);
                 } )
                 .lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 48
-                .lineToConstantHeading( new Vector2d( 18, wallPos ) )
+                .strafeLeft(1)
+                .lineToConstantHeading( new Vector2d( 12, wallPos ) )
                 .addTemporalMarker( ( ) -> {
                     //stop intake
                     inTakeDriver.toggleIntake(true);
@@ -140,38 +155,32 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
                     moveSlideToPos(lvl, SlideDirection.IN);
                 } )
-                //Grab Block 2 End ////////////////////////////
 
-                // Park
                 .setTangent( Math.toRadians( 90) )
-                .splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
                 .waitSeconds(0.2)
-                .turn(Math.toRadians(correctOrientationUsingImu(0)))
-                .waitSeconds(2)
-                .strafeLeft( getDistanceFromWall(SideColor.Blue))
-                .addTemporalMarker( ( ) -> {
+
+                .build();
+        robot.followTrajectorySequence(dropPreloadedGE2);
+
+        headingCorrection = correctOrientationUsingImu(0);
+        //Get Block 3 and Park
+        TrajectorySequence dropPreloadedGE3 = getTrajectorySequenceBuilder()
+                .turn(Math.toRadians(headingCorrection))
+                .waitSeconds(0.3)
+                .strafeLeft(0.5)
+               .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true);
                 } )
-                .lineToConstantHeading( new Vector2d( 52, wallPos ) ) // 48
-                .waitSeconds(0.5)
+                .lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 48
                 .addTemporalMarker( ( ) -> {
+                    //stop intake
                     inTakeDriver.toggleIntake(true);
                 } )
                 .build();
-        robot.followTrajectorySequence(dropPreloadedGE);
+        robot.followTrajectorySequence(dropPreloadedGE3);
 
-        //Correct Robot Orientation
-        //imuParams = imuDriver.getRobotImuParams();
-
-        //Measure distance from the right hand side wall
-        //dsParams = sensorDriver.getRobotSensorParams();
-        //telemetry.addData("imu angle %2f", imuParams.correctedHeading);
-        //telemetry.addData("Distance on Front %2f", dsParams.x_LS);
-        //telemetry.update();
-        sleep(7000);
         RobotLog.ii("SHANK", "Reached here...end");
-
-
 
     }
 
