@@ -24,7 +24,6 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         Trajectory traj_last;
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
-        //int barCodeLoc = 1;
         int barCodeLoc = sensorDriver.getBarCodeRED();
         RobotSensorParams dsParams = new RobotSensorParams();
 

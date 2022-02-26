@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tata.Blue;
+package org.firstinspires.ftc.teamcode.tata.Red;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -16,13 +16,13 @@ import com.acmerobotics.roadrunner.trajectory.constraints.*;
 //import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 import java.util.*;
 
-@Autonomous(name="BLUE - Auto - Warehouse", group="BLUE")
-public class AutoBlueWarehouse extends tataAutonomousBase {
+@Autonomous(name="RED - Auto - MKWarehouse", group="RED")
+public class AutoRedWarehouseManav extends tataAutonomousBase {
 
-    double wallPos = 63;
+    double wallPos = 61;
 
     //start position
-    public Pose2d startPose = new Pose2d(6, 61, Math.toRadians(270));
+    public Pose2d startPose = new Pose2d(6, -61, Math.toRadians(90));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,10 +30,11 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
         int barCodeLoc = 1;
+
         RobotSensorParams dsParams = new RobotSensorParams();
 
         while( !isStopRequested( ) && !isStarted( ) ) {
-            barCodeLoc = sensorDriver.getBarCodeBLUE();
+            barCodeLoc = sensorDriver.getBarCodeRED();
             telemetry.addData( "Waiting to Start. Element position", barCodeLoc );
             telemetry.update();
         }
@@ -47,36 +48,35 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
             return;
         }
         int lvl = barCodeLoc;
-        int yPosDropping = 35;
-        if (lvl==1) {
-            yPosDropping = 35;
+        int yPosDrop = -35;
+        if (lvl == 1) {
+            yPosDrop = -35;
             return;
-        } else if (lvl==3){
-            yPosDropping = 42;
+        } else if (lvl == 3) {
+            yPosDrop = -42;
             return;
-        } else if (lvl==2) {
-            yPosDropping = 39;
+        } else if (lvl == 2) {
+            yPosDrop = -39;
             return;
         }
-
         TrajectorySequence dropPreloadedGE = getTrajectorySequenceBuilder()
-
 //            return drive.trajectorySequenceBuilder( new Pose2d( 0, 61, Math.toRadians( 270 ) ) )
-                    .forward(10)
-                    .addTemporalMarker( ( ) -> {
-                        //robot.liftToShippingHubHeight( height );
-                        slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                .forward(10)
+                .addTemporalMarker( ( ) -> {
+                    //robot.liftToShippingHubHeight( height );
+                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
 
-                    } )
+                } )
 
-                    //(0,42) original coordinate to drop element onto the hub
-                    .lineToSplineHeading( new Pose2d(0, yPosDropping, Math.toRadians(67.5)) )
-                    .addTemporalMarker( ( ) -> {
-                        slideDriver.dropGameElement();
-                        slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
-                    } )
-                    .waitSeconds( 0.5 )
-                .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
+                //(0,42) original coordinate to drop element onto the hub
+                .lineToSplineHeading( new Pose2d(0, yPosDrop, Math.toRadians(-57.5)) )
+                //angle -67.5 originally
+                .addTemporalMarker( ( ) -> {
+                    slideDriver.dropGameElement();
+                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                } )
+                .waitSeconds( 0.5 )
+                .lineToSplineHeading( new Pose2d( 12, -wallPos, Math.toRadians( 0 ) ))
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE);
 
@@ -92,16 +92,16 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
 
         double ch = 0.0;
         TrajectorySequence moveToWarehouse = getTrajectorySequenceBuilder()
-                //.turn(-1 * Math.toRadians(imuParams.correctedHeading - 0))
+//                .turn(-1 * Math.toRadians(imuParams.correctedHeading - 0))
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true); //switch on intake
-                    } )
-                .waitSeconds(0.1)
-                .lineToConstantHeading( new Vector2d( 60, wallPos ) ) // 48
+                } )
+                .lineToConstantHeading( new Vector2d( 48, -wallPos ) ) // 48
+                .waitSeconds(0.5)
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(false); //switch OFF intake
                 } )
-                .lineToConstantHeading( new Vector2d( 12, wallPos ) )
+                .lineToConstantHeading( new Vector2d( 12, -wallPos ) )
                 .build( );
         robot.followTrajectorySequence(moveToWarehouse);
 
@@ -123,7 +123,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
                 } )
-                .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                .lineToSplineHeading( new Pose2d(0, -42, Math.toRadians(-57.5)) ) //67.5
                 //.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
                     slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.OUT);
@@ -135,10 +135,9 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 .waitSeconds( 0.8 )
 
                 // move to grab block 2
-                .setTangent( Math.toRadians( 90 ) )
+                .setTangent( Math.toRadians( 0 ) )
                 //.splineToSplineHeading( new Pose2d( 18/*49*/, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-                .lineToSplineHeading( new Pose2d( 12/*49*/, wallPos, Math.toRadians( 0 ) ))
-
+                .lineToSplineHeading( new Pose2d( 12/*49*/, -wallPos, Math.toRadians( 0 ) ))
                 .build( );
         robot.followTrajectorySequence(dropGE1);
 
@@ -176,17 +175,13 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
 
         //parking
         TrajectorySequence parkTraj = getTrajectorySequenceBuilder()
-                .setTangent( Math.toRadians( 90 ) )
+                .setTangent( Math.toRadians( 0 ) )
                 //.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-                .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
-                .lineToSplineHeading( new Pose2d(48, wallPos, Math.toRadians(0)) )
+                .lineToSplineHeading( new Pose2d( 12, -wallPos, Math.toRadians( 0 ) ))
+                .lineToSplineHeading( new Pose2d(48, -wallPos, Math.toRadians(0)) )
                 .build();
         robot.followTrajectorySequence(parkTraj);
 
-        }
-
     }
 
-
-
-
+}

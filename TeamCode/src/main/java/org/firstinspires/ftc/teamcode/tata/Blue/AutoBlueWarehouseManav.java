@@ -16,13 +16,13 @@ import com.acmerobotics.roadrunner.trajectory.constraints.*;
 //import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 import java.util.*;
 
-@Autonomous(name="BLUE - Auto - Warehouse", group="BLUE")
-public class AutoBlueWarehouse extends tataAutonomousBase {
+@Autonomous(name="MANAV_BLUE - Auto - Warehouse", group="BLUE")
+public class AutoBlueWarehouseManav extends tataAutonomousBase {
 
     double wallPos = 63;
 
     //start position
-    public Pose2d startPose = new Pose2d(6, 61, Math.toRadians(270));
+    public Pose2d startPose = new Pose2d(6, 61, Math.toRadians(90));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,35 +47,22 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
             return;
         }
         int lvl = barCodeLoc;
-        int yPosDropping = 35;
-        if (lvl==1) {
-            yPosDropping = 35;
-            return;
-        } else if (lvl==3){
-            yPosDropping = 42;
-            return;
-        } else if (lvl==2) {
-            yPosDropping = 39;
-            return;
-        }
-
         TrajectorySequence dropPreloadedGE = getTrajectorySequenceBuilder()
-
 //            return drive.trajectorySequenceBuilder( new Pose2d( 0, 61, Math.toRadians( 270 ) ) )
-                    .forward(10)
-                    .addTemporalMarker( ( ) -> {
-                        //robot.liftToShippingHubHeight( height );
-                        slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                .forward(10)
+                .addTemporalMarker( ( ) -> {
+                    //robot.liftToShippingHubHeight( height );
+                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
 
-                    } )
+                } )
 
-                    //(0,42) original coordinate to drop element onto the hub
-                    .lineToSplineHeading( new Pose2d(0, yPosDropping, Math.toRadians(67.5)) )
-                    .addTemporalMarker( ( ) -> {
-                        slideDriver.dropGameElement();
-                        slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
-                    } )
-                    .waitSeconds( 0.5 )
+                //(0,42) coordinate to drop element onto the hub
+                .lineToSplineHeading( new Pose2d(0, 35, Math.toRadians(67.5)) )
+                .addTemporalMarker( ( ) -> {
+                    slideDriver.dropGameElement();
+                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                } )
+                .waitSeconds( 1 )
                 .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE);
@@ -95,9 +82,10 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 //.turn(-1 * Math.toRadians(imuParams.correctedHeading - 0))
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true); //switch on intake
-                    } )
-                .waitSeconds(0.1)
-                .lineToConstantHeading( new Vector2d( 60, wallPos ) ) // 48
+                } )
+
+                .lineToConstantHeading( new Vector2d( 48, wallPos ) ) // 48
+                .waitSeconds(0.5)
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(false); //switch OFF intake
                 } )
@@ -123,12 +111,13 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
                 } )
-                .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                .lineToSplineHeading( new Pose2d(0, 35, Math.toRadians(67.5)) )
+                //upsidy do
                 //.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
-                    slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.OUT);
+                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
                     slideDriver.dropGameElement();
-                    slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.IN);
+                    slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
                 } )
@@ -183,9 +172,9 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 .build();
         robot.followTrajectorySequence(parkTraj);
 
-        }
-
     }
+
+}
 
 
 
