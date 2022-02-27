@@ -28,13 +28,13 @@ public class RobotSlideDriver implements Runnable {
     }
 
     public void dropGameElement() {
-        double tilt_pos_delta = 0.15;
+        double tilt_pos_delta = 0.2;
         double tilt_arm_pos_delta = 0.3;
         //Tilt box
         slideHW.setSlideServoCurrPos(0, -1 * tilt_pos_delta);
 
         try {
-            Thread.sleep(750);
+            Thread.sleep(100);//100
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -43,8 +43,9 @@ public class RobotSlideDriver implements Runnable {
 
         slideHW.setSlideServoCurrPos(1, -1 * tilt_arm_pos_delta);
         //slideHW.rotateBoxArm(0.8);
+
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -72,7 +72,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
                 })
                 .waitSeconds(1.0)
 
-                .forward(3)
+                .forward(4)
                 .addTemporalMarker(() -> {
                     armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
                 })
@@ -84,14 +84,14 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         if (barCodeLoc == 1) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
                     .lineToSplineHeading(new Pose2d(-44, -24, Math.toRadians(180)))
-                    .back(11)
+                    .back(11.5)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
         if (barCodeLoc == 2) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
                     .lineToSplineHeading(new Pose2d(-44, -24, Math.toRadians(180)))
-                    .back(10)
+                    .back(12)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
@@ -104,7 +104,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
 
         }
 
-        sleep(500);
+        sleep(1000);
         slideDriver.dropGameElement();
 
         TrajectorySequence moveToDropCarousel = getTrajectorySequenceBuilder()
@@ -126,7 +126,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();
 
-        telemetry.addData("Distance on Front %2f", dsParams.x_LF);
+        telemetry.addData("Distance on Front %2f", dsParams.x_LF1);//was using LF
         telemetry.addData("Distance on Right %2f", dsParams.x_RS);
         telemetry.update();
 
@@ -135,7 +135,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
                 .strafeRight(dsParams.x_RS - 1)
                 .waitSeconds(0.2)
-                .forward(dsParams.x_LF - 8)  //Carousel if of radius 7.5 inch
+                .forward(dsParams.x_LF1 - 8)  //Carousel if of radius 7.5 inch //was using LF
                 .addTemporalMarker(() -> {
                     //start Carosel motor
                     crDriver.toggleCarousel(true);
@@ -145,7 +145,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
                     //start Carosel motor
                     crDriver.toggleCarousel(true);
                 })
-                .lineToLinearHeading(new Pose2d(-65, -38, Math.toRadians(270)))//y was -37
+                .lineToLinearHeading(new Pose2d(-65, -37.5, Math.toRadians(270)))//y was -37
 
                 .build();
         robot.followTrajectorySequence(moveToStartCarousel);

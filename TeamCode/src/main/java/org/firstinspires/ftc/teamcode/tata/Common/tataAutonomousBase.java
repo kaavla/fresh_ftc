@@ -106,7 +106,7 @@ public class tataAutonomousBase extends LinearOpMode {
 
     public void moveSlideToPos(int lvl, SlideDirection slideDirection) {
         //0th element should be ignored as levels are 1, 2, 3
-        double slideDistanceInIncPerLevel[] = {0, 5.0, 12.0, 17.0};
+        double slideDistanceInIncPerLevel[] = {0, 5.0, 9.5, 17.0};
         double slideInclinePerLevel[]       = {0, 0.0, 0.1,  0.2};
 
         if (slideDirection == SlideDirection.OUT) {
@@ -182,15 +182,15 @@ public class tataAutonomousBase extends LinearOpMode {
             if (sp == StartPos.Storage) {
                 switch (lvl) {
                     case 1: {
-                        pose = new Pose2d(-45, -47.5, Math.toRadians(90));
+                        pose = new Pose2d(-44, -52, Math.toRadians(90));//-45,-47.5
                         break;
                     }
                     case 2: {
-                        pose = new Pose2d(-36, -47.5, Math.toRadians(90));
+                        pose = new Pose2d(-36, -51.5, Math.toRadians(90));
                         break;
                     }
                     case 3: {
-                        pose = new Pose2d(-27, -47.5, Math.toRadians(90));
+                        pose = new Pose2d(-29, -52, Math.toRadians(90));
                         break;
                     }
                 }

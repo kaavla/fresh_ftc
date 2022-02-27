@@ -51,7 +51,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
         }
         int lvl = barCodeLoc;
         TrajectorySequence dropPreloadedGE = getTrajectorySequenceBuilder()
-                //.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 70 ), new MecanumVelocityConstraint( 40, 17 ) ) ) )
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 80 ), new MecanumVelocityConstraint( 50, 14.1 ) ) ) )
 
                 // move to dump initial block in designated layer
                 .addTemporalMarker( ( ) -> {
@@ -60,7 +60,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                     moveSlideToPos(lvl, SlideDirection.OUT);
                 } )
                 .setTangent( Math.toRadians( 270 ) )
-                .splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 300 ) )
+                .splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 300 ) )
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
                 } )
@@ -88,21 +88,22 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true);
                 } )
-                .lineToConstantHeading( new Vector2d( 48, wallPos ) ) // 48
-                .strafeLeft(1)
-                .lineToConstantHeading( new Vector2d( 12, wallPos ) )
+                .forward(42)
+                .back(42)
+                //.lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
+                //.lineToConstantHeading( new Vector2d( 12, wallPos+1 ) )
                 .addTemporalMarker( ( ) -> {
                     //stop intake
-                    inTakeDriver.toggleIntake(true);
+                    inTakeDriver.toggleIntake(false);
                 } )
 
                 .addTemporalMarker( ( ) -> {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
-                    moveSlideToPos(lvl, SlideDirection.OUT);
+                    moveSlideToPos(3, SlideDirection.OUT);
                 } )
 
                 .setTangent( Math.toRadians( 200) )
-                .splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+                .splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
                 } )
@@ -111,7 +112,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
-                    moveSlideToPos(lvl, SlideDirection.IN);
+                    moveSlideToPos(3, SlideDirection.IN);
                 } )
 
                 .setTangent( Math.toRadians( 90) )
@@ -130,9 +131,9 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true);
                 } )
-                .lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 48
+                .lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
                 .strafeLeft(1)
-                .lineToConstantHeading( new Vector2d( 12, wallPos ) )
+                .lineToConstantHeading( new Vector2d( 12, wallPos+1 ) )
                 .addTemporalMarker( ( ) -> {
                     //stop intake
                     inTakeDriver.toggleIntake(true);
@@ -140,11 +141,11 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
 
                 .addTemporalMarker( ( ) -> {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
-                    moveSlideToPos(lvl, SlideDirection.OUT);
+                    moveSlideToPos(3, SlideDirection.OUT);
                 } )
 
                 .setTangent( Math.toRadians( 200) )
-                .splineToLinearHeading( new Pose2d( -4.22,42.2 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+                .splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
                 } )
@@ -153,7 +154,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
-                    moveSlideToPos(lvl, SlideDirection.IN);
+                    moveSlideToPos(3, SlideDirection.IN);
                 } )
 
                 .setTangent( Math.toRadians( 90) )
@@ -172,7 +173,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                .addTemporalMarker( ( ) -> {
                     inTakeDriver.toggleIntake(true);
                 } )
-                .lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 48
+                .lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
                 .addTemporalMarker( ( ) -> {
                     //stop intake
                     inTakeDriver.toggleIntake(true);

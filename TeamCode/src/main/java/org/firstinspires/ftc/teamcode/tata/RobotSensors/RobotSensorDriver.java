@@ -41,11 +41,11 @@ public class RobotSensorDriver implements Runnable {
         int barCodeLoc = 1;
         //check the left front sensors
         if ((avg_rsp.x_RF < 10) || (avg_rsp.x_RF1 < 10)) { // params were 20
-            barCodeLoc = 3;
+            barCodeLoc = 1;
         } else if ((avg_rsp.x_LF < 10) || (avg_rsp.x_LF1 < 10)) { // params were 20
             barCodeLoc = 2;
         } else {
-            barCodeLoc = 1;
+            barCodeLoc = 3;
         }
         return barCodeLoc;
     }

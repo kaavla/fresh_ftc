@@ -46,27 +46,29 @@ public class RobotArmDriver implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            armHW.servoSetPosRaw(0.6, 3);
+            armHW.servoSetPosRaw(0.5, 3); //0.6 pos
 
         }  else if (pos == RobotArmPreSetPos.SAVE) {
             //Save position
-            armHW.servoSetPosRaw(0.1, 3);
+
+            //base servo
+            armHW.servoSetPosRaw(0.1, 1);//0.2 pos
+
+            //arm servo
+            armHW.servoSetPosRaw(0.7, 2);//0.5
+            try {
+                Thread.sleep(400);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //servo at the end of the arm
+            armHW.servoSetPosRaw(0.6, 3);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            //arm servo
-            armHW.servoSetPosRaw(0.5, 2);
-            try {
-                Thread.sleep(400);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            //base servo
-            armHW.servoSetPosRaw(0.5, 1);
             try {
                 Thread.sleep(400);
             } catch (InterruptedException e) {
