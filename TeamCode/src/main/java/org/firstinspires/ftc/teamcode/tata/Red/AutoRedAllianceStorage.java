@@ -41,7 +41,6 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
             stopThreads();
             return;
         }
-
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
                 .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
