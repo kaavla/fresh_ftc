@@ -34,7 +34,7 @@ public class RobotSlideDriver implements Runnable {
         slideHW.setSlideServoCurrPos(0, -1 * tilt_pos_delta);
 
         try {
-            Thread.sleep(100);//100
+            Thread.sleep(500);//was 50ms; we changed it because just 100 milliseconds IS TOO SLOW
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ public class RobotSlideDriver implements Runnable {
         //slideHW.rotateBoxArm(0.8);
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(475);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

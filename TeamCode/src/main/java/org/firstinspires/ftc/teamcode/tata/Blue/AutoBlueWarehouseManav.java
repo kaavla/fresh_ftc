@@ -114,7 +114,6 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
                 } )
                 .lineToSplineHeading( new Pose2d(0, 35, Math.toRadians(67.5)) )
-                //upsidy do
                 //.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);

@@ -52,7 +52,18 @@ public class RobotIntakeDriver implements Runnable{
             }
         }
     }
-
+    public void intakeSet(boolean isOn, boolean isCollecting){
+        //manav function
+       if(!isOn){
+           hw.stopIntake();
+       }else{
+           if(isCollecting){
+               hw.startIntake(-1.0);
+           }else{
+               hw.startIntake(1.0);
+           }
+       }
+    }
     public void checkGamePad(Gamepad gp) {
         if (gp.left_trigger > 0.5) {
             hw.setPower(intake_power);

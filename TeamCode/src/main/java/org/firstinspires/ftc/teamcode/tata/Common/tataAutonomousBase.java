@@ -120,7 +120,22 @@ public class tataAutonomousBase extends LinearOpMode {
             slideDriver.moveRobotSlideBy(-1 * slideDistanceInIncPerLevel[lvl], 0);
         }
     }
+    public void custommoveSlideToPos(int lvl, SlideDirection slideDirection, double slideDistance, double slideIncline) {
+        //0th element should be ignored as levels are 1, 2, 3
+        double slideDistanceInIncPerLevel = slideDistance;
+        double slideInclinePerLevel       = slideIncline;
 
+        if (slideDirection == SlideDirection.OUT) {
+            slideDriver.moveRobotSlideBy(slideDistanceInIncPerLevel, 0);
+            driver0.pullLinearActuatorBy(-1 * slideInclinePerLevel); //Pull up
+            driver1.pullLinearActuatorBy(-1 * slideInclinePerLevel);
+        } else {
+            //IN
+            driver0.pullLinearActuatorBy(slideInclinePerLevel); //pull down
+            driver1.pullLinearActuatorBy(slideInclinePerLevel); //pull down
+            slideDriver.moveRobotSlideBy(-1 * slideDistanceInIncPerLevel, 0);
+        }
+    }
 /*
     target   Imu   direction to move
         0         10   CW 10    (target - imu = -10)
@@ -181,8 +196,9 @@ public class tataAutonomousBase extends LinearOpMode {
         if (sc == SideColor.Red) {
             if (sp == StartPos.Storage) {
                 switch (lvl) {
+                    //red alliance side
                     case 1: {
-                        pose = new Pose2d(-44, -52, Math.toRadians(90));//-45,-47.5
+                        pose = new Pose2d(-42, -52, Math.toRadians(90));//-45,-47.5
                         break;
                     }
                     case 2: {
@@ -213,23 +229,24 @@ public class tataAutonomousBase extends LinearOpMode {
 
             }
         } else {
-            //Blue side
+            //Blue alliance side
             if (sp == StartPos.Storage) {
                 switch (lvl) {
-                    case 1: {
-                        pose = new Pose2d(-27, 47.5, Math.toRadians(270));
+                    case 3: {
+                        pose = new Pose2d(-43, 53, Math.toRadians(270));
                         break;
                     }
                     case 2: {
-                        pose = new Pose2d(-36, 47.5, Math.toRadians(270));
+                        pose = new Pose2d(-36.5, 53, Math.toRadians(270));
                         break;
                     }
-                    case 3: {
-                        pose = new Pose2d(-45, 47.5, Math.toRadians(270));
+                    case 1: {
+                        pose = new Pose2d(-28, 52, Math.toRadians(270));
                         break;
                     }
                 }
-            } else {
+            }
+            else {
                 //sp == Warehouse
                 switch (lvl) {
                     case 1: {

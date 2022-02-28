@@ -126,11 +126,20 @@ public class RobotArmDriver implements Runnable {
     }
 
     public void checkGamePad(Gamepad gp) {
-        if ((gp.left_stick_y != 0) || (gp.left_stick_x != 0) ) {
-            double leftY = gp.left_stick_y*-1;
+        if ((gp.left_stick_y != 0) || (gp.left_stick_x != 0)) {
+            double leftY = gp.left_stick_y * -1;
             double leftX = gp.left_stick_x * 1;
-            moveRobotArmBy(leftX,leftY, 0.0);
-        } /*
+            moveRobotArmBy(leftX, leftY, 0.0);
+        }
+        if (gp.left_bumper) {
+            armHW.servoSetPosRaw(0.7, 3);
+        }
+        if (gp.right_bumper) {
+            armHW.servoSetPosRaw(1.5,3);
+        }
+    }
+
+        /*
         if (gp.b) {
             //armHW.servoSetPosRawRelative(0.05, 2);
             moveRobotArmBy(0.5,0.0, 0.0);
@@ -156,7 +165,6 @@ public class RobotArmDriver implements Runnable {
         }
         */
 
-    }
 
     public RobotArmParams getRobotParams() {
         RobotArmParams param = new RobotArmParams();

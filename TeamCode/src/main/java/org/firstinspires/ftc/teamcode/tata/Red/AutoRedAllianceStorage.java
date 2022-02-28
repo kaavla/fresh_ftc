@@ -42,9 +42,6 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
             return;
         }
 
-       // Pose2d pose = getTeamMarkerCoord(SideColor.Red, StartPos.Storage, barCodeLoc);
-        //double slideLen = getSlideHeightByLvlInInch(barCodeLoc);
-       // int lvl = barCodeLoc;
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
                 .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))

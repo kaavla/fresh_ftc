@@ -24,7 +24,7 @@ public class MeepMeepPaths {
 	public static void main( String[] args ) {
 		//BlueInAutoDuck rt = new BlueInAutoDuck();
 		//BlueInAutoFreight2 rt = new BlueInAutoFreight2();
-		RedInAutoFreight2 rt = new RedInAutoFreight2();
+		//RedInAutoFreight2 rt = new RedInAutoFreight2();
 		//BlueOutAutoDuck rt = new BlueOutAutoDuck();
 		//BOutDuckTest rt = new BOutDuckTest();
 		//PositionGrapherTest rt = new PositionGrapherTest();
@@ -32,6 +32,7 @@ public class MeepMeepPaths {
 		//ShankRed1 rt = new ShankRed1();
 		//ShankBlue1 rt = new ShankBlue1();
 		//ShankBlue2 rt = new ShankBlue2();
+		ShankManualBlue rt = new ShankManualBlue();
 		MeepMeep mm = new MeepMeep( 700 )
 				.setBackground( MeepMeep.Background.FIELD_FREIGHT_FRENZY )
 				.setTheme( new ColorSchemeRedDark() )

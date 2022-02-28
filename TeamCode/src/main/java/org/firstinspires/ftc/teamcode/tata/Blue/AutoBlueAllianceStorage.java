@@ -24,28 +24,22 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
         Trajectory traj_last;
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
+        int barCodeLoc = sensorDriver.getBarCodeBLUE();
+        RobotSensorParams dsParams = new RobotSensorParams();
 
         while (!isStopRequested() && !isStarted()) {
-            //barCodeLoc = 1;//sensorDriver.getBarCodeBLUE();
-           // telemetry.addData("Waiting to Start. Element position", barCodeLoc);
-            //telemetry.update();
         }
 
         waitForStart();
-        int barCodeLoc = 1;//sensorDriver.getBarCodeBLUE();
-        RobotSensorParams dsParams = new RobotSensorParams();
 
-        telemetry.addData("Started. Element position", barCodeLoc);
-        telemetry.update();
 
         if (isStopRequested()) {
             stopThreads();
             return;
         }
 
-        //double slideLen = getSlideHeightByLvlInInch(barCodeLoc);
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
-                .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(7.5, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         robot.followTrajectorySequence(identifyTeamMarker);
@@ -57,85 +51,70 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
 
         Pose2d pose = getTeamMarkerCoord(SideColor.Blue, StartPos.Storage, barCodeLoc);
         int lvl = barCodeLoc;
-
         TrajectorySequence pickTeamMarker = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
-                    //Robot Arm to Collect Pos
                     armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
                 })
                 .waitSeconds(1)
                 .lineToSplineHeading(pose)
                 .addTemporalMarker(() -> {
-                    //slideDriver.moveRobotSlideBy(slideLen, 0);
-                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
                     moveSlideToPos(lvl, SlideDirection.OUT);
                 })
                 .waitSeconds(1.0)
 
-                .forward(3)
+                .forward(4)
                 .addTemporalMarker(() -> {
                     armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
                 })
-                //.waitSeconds(1.0)
                 .build();
         robot.followTrajectorySequence(pickTeamMarker);
         sleep(500);
 
-        if (barCodeLoc == 1) {
+        if (barCodeLoc == 3) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 26, Math.toRadians(180)))
-                    .back(16)
+                    .lineToSplineHeading(new Pose2d(-44, 25, Math.toRadians(180)))
+                    .back(12)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
         if (barCodeLoc == 2) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(180)))
-                    .back(12)
+                    .lineToSplineHeading(new Pose2d(-44, 25, Math.toRadians(180)))
+                    .back(13)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
-        if (barCodeLoc == 3) {
+        if (barCodeLoc == 1) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(180)))
-                    .back(11)
+                    .lineToSplineHeading(new Pose2d(-44, 25, Math.toRadians(180)))
+                    .back(15)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
 
         }
 
-        sleep(500);
+        sleep(1000);
         slideDriver.dropGameElement();
 
         TrajectorySequence moveToDropCarousel = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
-                    //Draw Sides in
-                    //slideDriver.moveRobotSlideBy(-1*slideLen, 0);
-                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
                     moveSlideToPos(lvl, SlideDirection.IN);
                 })
 
-                .lineToLinearHeading(new Pose2d(-60, 49, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-56, 43, Math.toRadians(90)))
                 .build();
         robot.followTrajectorySequence(moveToDropCarousel);
 
-        //Correct Robot Orientation
-        //imuParams = imuDriver.getRobotImuParams();
-        //robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 90));
-
-        //Measure distance from the right hand side wall
         dsParams = sensorDriver.getRobotSensorParams();
 
-        telemetry.addData("Distance on Front %2f", dsParams.x_RF);
+        telemetry.addData("Distance on Front %2f", dsParams.x_RF1);
         telemetry.addData("Distance on Right %2f", dsParams.x_LS);
         telemetry.update();
-
-        //sleep(3000);
 
         TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
                 .strafeLeft(dsParams.x_LS - 1)
                 .waitSeconds(0.2)
-                .forward(dsParams.x_RF - 8)  //Carousel if of radius 7.5 inch
+                .forward(dsParams.x_RF - 8)
                 .addTemporalMarker(() -> {
                     //start Carosel motor
                     crDriver.toggleCarousel(false);
@@ -145,7 +124,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                     //start Carosel motor
                     crDriver.toggleCarousel(false);
                 })
-                .lineToLinearHeading(new Pose2d(-65, 33, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-65, 34, Math.toRadians(90)))//y was -37
 
                 .build();
         robot.followTrajectorySequence(moveToStartCarousel);
