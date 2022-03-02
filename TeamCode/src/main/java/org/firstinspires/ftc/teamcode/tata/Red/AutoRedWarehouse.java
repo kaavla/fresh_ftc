@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 //import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
@@ -22,7 +23,7 @@ public class AutoRedWarehouse extends tataAutonomousBase {
     double wallPos = 61;
 
     //start position
-    public Pose2d startPose = new Pose2d(6, -61, Math.toRadians(90));
+    public Pose2d startPose = new Pose2d(6, 61, Math.toRadians(90));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,151 +36,163 @@ public class AutoRedWarehouse extends tataAutonomousBase {
 
         while( !isStopRequested( ) && !isStarted( ) ) {
             barCodeLoc = sensorDriver.getBarCodeRED();
-            telemetry.addData( "Waiting to Start. Element position at", barCodeLoc );
+            telemetry.addData( "Waiting to Start. Element position", barCodeLoc );
             telemetry.update();
         }
 
         waitForStart();
-        telemetry.addData( "Started. Element position at", barCodeLoc );
+        telemetry.addData( "Started. Element position", barCodeLoc );
         telemetry.update();
 
         if (isStopRequested()) {
             stopThreads();
             return;
         }
-        int lvl = barCodeLoc;
 
+        /*TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
+                .forward(7.5, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        robot.followTrajectorySequence(identifyTeamMarker);
+
+        barCodeLoc = sensorDriver.getBarCodeBLUE();
+        telemetry.addData("Started. Element position", barCodeLoc);
+        telemetry.update();
+        sleep(1000); */
+
+        int lvl = barCodeLoc;
         TrajectorySequence dropPreloadedGE = getTrajectorySequenceBuilder()
-//            return drive.trajectorySequenceBuilder( new Pose2d( 0, 61, Math.toRadians( 270 ) ) )
-                .forward(10)
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 80 ), new MecanumVelocityConstraint( 50, 14.1 ) ) ) )
+//80 and 50
+                // move to dump initial block in designated layer
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
                     moveSlideToPos(lvl, SlideDirection.OUT);
-
                 } )
-
-                //(0,42) original coordinate to drop element onto the hub
-                .lineToSplineHeading( new Pose2d(-4.6, -41.3, Math.toRadians(-67.5)) )
-                //angle -67.5 originally
+                .setTangent( Math.toRadians( 270 ) )
+                .splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 300 ) )
+                //.lineToSplineHeading( new Pose2d(-4.6, 40.5, Math.toRadians(67)) )
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
-                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
-                } )
-                .waitSeconds( 0.5 )
-
-                .addTemporalMarker( ( ) -> {
                     moveSlideToPos(lvl, SlideDirection.IN);
                 } )
+                .waitSeconds( 1 )
 
-                .lineToSplineHeading( new Pose2d( 12, -wallPos, Math.toRadians( 0 ) ))
+                //Grab Block 1 from warehouse
+                .setTangent( Math.toRadians( 90) )
+                .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                //.lineToSplineHeading( new Pose2d(12, wallPos, Math.toRadians(0)) )
+
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
-        //Correct Robot Orientation
-        //imuParams = imuDriver.getRobotImuParams();
+        double headingCorrection = correctOrientationUsingImu(0);
 
-        //Measure distance from the right hand side wall
-        dsParams = sensorDriver.getRobotSensorParams();
-        //telemetry.addData("imu angle %2f", imuParams.correctedHeading);
-        telemetry.addData("Distance on Front %2f", dsParams.x_LS);
-        telemetry.update();
-        sleep(500);
+        //Get Block #1 from warehouse
+        TrajectorySequence dropWarehouseGE1 = getTrajectorySequenceBuilder()
 
-        double ch = 0.0;
-        TrajectorySequence moveToWarehouse = getTrajectorySequenceBuilder()
-//                .turn(-1 * Math.toRadians(imuParams.correctedHeading - 0))
+                .turn(Math.toRadians(headingCorrection))
+                .waitSeconds(0.3)
+                .strafeLeft(0.5)
                 .addTemporalMarker( ( ) -> {
-                    inTakeDriver.toggleIntake(true); //switch on intake
+                    // inTakeDriver.toggleIntake(true);
                 } )
-                .lineToConstantHeading( new Vector2d( 48, -wallPos ) ) // 48
-                .waitSeconds(0.5)
+                .forward(42)
+                // .back(42)
+                //.lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
+                //.lineToConstantHeading( new Vector2d( 12, wallPos+1 ) )
                 .addTemporalMarker( ( ) -> {
-                    inTakeDriver.toggleIntake(false); //switch OFF intake
+                    //stop intake
+                    //inTakeDriver.toggleIntake(true);
                 } )
-                .lineToConstantHeading( new Vector2d( 12, -wallPos ) )
-                .build( );
-        robot.followTrajectorySequence(moveToWarehouse);
-
-        //Add error corrections for imu + distance from wall
-        //Correct Robot Orientation
-        //imuParams = imuDriver.getRobotImuParams();
-
-        //Measure distance from the right hand side wall
-        dsParams = sensorDriver.getRobotSensorParams();
-        telemetry.addData("Distance on Front %2f", dsParams.x_LS);
-        telemetry.update();
-
-        sleep(500);
-
-        TrajectorySequence dropGE1 = getTrajectorySequenceBuilder()
-                //.turn(-1 * Math.toRadians(imuParams.correctedHeading - 0))
-
-                // move to dump block 1 in the top layer
                 .addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    // moveSlideToPos(3, SlideDirection.OUT);
                 } )
-                .lineToSplineHeading( new Pose2d(-4.6, -41.3, Math.toRadians(-67.5)) ) //67.5
-                //.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+                //.setTangent( Math.toRadians( 200) )
+                //.splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+                //.lineToSplineHeading( new Pose2d(-4.6, 41, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
-                    //slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.OUT);
-                    moveSlideToPos(3,SlideDirection.OUT);
+                    //slideDriver.dropGameElement();
+                } )
+                .waitSeconds( 0.8 )
+                .addTemporalMarker( ( ) -> {
+                    //robot.liftToShippingHubHeight( height );
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    //moveSlideToPos(3, SlideDirection.IN);
+                } )
+                //.setTangent( Math.toRadians( 90) )
+                //.splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                //.lineToSplineHeading( new Pose2d(12, wallPos, Math.toRadians(0)) )
+                .build();
+        robot.followTrajectorySequence(dropWarehouseGE1);
+        PoseStorage.currentPose = robot.getPoseEstimate();
+
+        headingCorrection = correctOrientationUsingImu(0);
+        //Get Block 2
+        /*TrajectorySequence dropWarehouseGE2 = getTrajectorySequenceBuilder()
+                .turn(Math.toRadians(headingCorrection))
+                .waitSeconds(0.3)
+                .strafeLeft(0.5)
+                .addTemporalMarker( ( ) -> {
+                    inTakeDriver.toggleIntake(true);
+                } )
+                .lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
+                .strafeLeft(0.5)
+                .lineToConstantHeading( new Vector2d( 12, wallPos+1 ) )
+                .addTemporalMarker( ( ) -> {
+                    //stop intake
+                    inTakeDriver.toggleIntake(true);
+                } )
+                .addTemporalMarker( ( ) -> {
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
+                    moveSlideToPos(3, SlideDirection.OUT);
+                } )
+                .setTangent( Math.toRadians( 200) )
+                .splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+                .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
-                    //slideDriver.moveSlideToDropPos(3, RobotSlideDriver.SlideDirection.IN);
-					moveSlideToPos(3,SlideDirection.IN);
-//                    robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200 );
                 } )
                 .waitSeconds( 0.8 )
-
-                // move to grab block 2
-                .setTangent( Math.toRadians( 0 ) )
-                //.splineToSplineHeading( new Pose2d( 18/*49*/, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-                .lineToSplineHeading( new Pose2d( 12/*49*/, -wallPos, Math.toRadians( 0 ) ))
-                .build( );
-        robot.followTrajectorySequence(dropGE1);
-
-        /*
-        //in warehouse picking up first element
-        TrajectorySequence intakeGE = getTrajectorySequenceBuilder()
                 .addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0.6 ); //intake motors start
+                    //robot.liftToShippingHubHeight( height );
+                    //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
+                    moveSlideToPos(3, SlideDirection.IN);
                 } )
-
-                .lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 53
-                .lineToConstantHeading( new Vector2d( 12, wallPos ) )
-
-                .addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0 ); //stop intake motors
-                } )
+                .setTangent( Math.toRadians( 90) )
+                .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                .waitSeconds(0.2)
                 .build();
-        robot.followTrajectorySequence(intakeGE);
+        robot.followTrajectorySequence(dropWarehouseGE2);
 
-        //splining to hub to drop element
-        TrajectorySequence dropGE2 = getTrajectorySequenceBuilder()
-                // move to dump block 2 in the top layer
-                .addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-                } )
+        headingCorrection = correctOrientationUsingImu(0);
 
-                .lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
-                .addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200 );
-                } )
-                .waitSeconds( 0.8 )
-                .build();
-        robot.followTrajectorySequence(dropGE2); */
-
-        //parking
+        /*old parking trajectory
         TrajectorySequence parkTraj = getTrajectorySequenceBuilder()
-                .setTangent( Math.toRadians( 0 ) )
+                .setTangent( Math.toRadians( 90 ) )
                 //.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-                .lineToSplineHeading( new Pose2d( 12, -wallPos, Math.toRadians( 0 ) ))
-                .lineToSplineHeading( new Pose2d(48, -wallPos, Math.toRadians(0)) )
+                .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
+                .lineToSplineHeading( new Pose2d(48, wallPos, Math.toRadians(0)) )
                 .build();
         robot.followTrajectorySequence(parkTraj);
 
+        //Get Block 3 and Park
+        TrajectorySequence dropWarehouseGE3 = getTrajectorySequenceBuilder()
+                .turn(Math.toRadians(headingCorrection))
+                .waitSeconds(0.3)
+                .strafeLeft(0.5)
+                .addTemporalMarker( ( ) -> {
+                    inTakeDriver.toggleIntake(true);
+                } )
+                .lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
+                .addTemporalMarker( ( ) -> {
+                    //stop intake
+                    inTakeDriver.toggleIntake(true);
+                } )
+                .build();
+        robot.followTrajectorySequence(dropWarehouseGE3);*/
+        stopThreads();
     }
-
 }

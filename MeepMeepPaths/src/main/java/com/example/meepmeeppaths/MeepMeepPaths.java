@@ -32,7 +32,8 @@ public class MeepMeepPaths {
 		//ShankRed1 rt = new ShankRed1();
 		//ShankBlue1 rt = new ShankBlue1();
 		//ShankBlue2 rt = new ShankBlue2();
-		ShankManualBlue rt = new ShankManualBlue();
+		//ShankManualBlue rt = new ShankManualBlue();
+		ShankManualBlueSharedHub rt = new ShankManualBlueSharedHub();
 		MeepMeep mm = new MeepMeep( 700 )
 				.setBackground( MeepMeep.Background.FIELD_FREIGHT_FRENZY )
 				.setTheme( new ColorSchemeRedDark() )

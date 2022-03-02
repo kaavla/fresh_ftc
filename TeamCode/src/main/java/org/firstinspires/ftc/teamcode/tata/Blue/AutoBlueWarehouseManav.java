@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 //import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
@@ -68,6 +69,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         //Correct Robot Orientation
         //imuParams = imuDriver.getRobotImuParams();
@@ -94,6 +96,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .lineToConstantHeading( new Vector2d( 12, wallPos ) )
                 .build( );
         robot.followTrajectorySequence(moveToWarehouse);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         //Add error corrections for imu + distance from wall
         //Correct Robot Orientation
@@ -133,6 +136,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
 
                 .build( );
         robot.followTrajectorySequence(dropGE1);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         /*
         //in warehouse picking up first element
@@ -174,7 +178,9 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .lineToSplineHeading( new Pose2d(48, wallPos, Math.toRadians(0)) )
                 .build();
         robot.followTrajectorySequence(parkTraj);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
+        stopThreads();
     }
 
 }

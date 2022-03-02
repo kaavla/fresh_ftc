@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
@@ -81,7 +82,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
 
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE);
-
+        PoseStorage.currentPose = robot.getPoseEstimate();
         //double headingCorrection = correctOrientationUsingImu(0);
 
         //Get Block #1
@@ -133,7 +134,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE1);
-
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         //headingCorrection = correctOrientationUsingImu(0);
         //Get Block 2
@@ -190,6 +191,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .forward(50)
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE2);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         //headingCorrection = correctOrientationUsingImu(0);
         //Get Block 3 and Park
@@ -208,6 +210,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 } )
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE3);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         RobotLog.ii("SHANK", "Reached here...end");
 

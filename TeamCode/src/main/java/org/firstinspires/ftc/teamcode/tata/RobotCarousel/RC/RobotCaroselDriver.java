@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.tata.RobotCarousel.RC;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
+
 
 public class RobotCaroselDriver implements Runnable{
     private RobotCarouselHW hw = new RobotCarouselHW();
@@ -19,8 +21,8 @@ public class RobotCaroselDriver implements Runnable{
     //Sleep time interval (milliseconds) for the position update thread
     private int sleepTime;
 
-    public RobotCaroselDriver(HardwareMap ahwMap, int threadSleepDelay){
-        hw.init(ahwMap);
+    public RobotCaroselDriver(HardwareMap ahwMap, int threadSleepDelay, tataAutonomousBase.SideColor sc){
+        hw.init(ahwMap, sc);
         sleepTime = threadSleepDelay;
     }
 
@@ -41,30 +43,22 @@ public class RobotCaroselDriver implements Runnable{
         return param;
     }
 
-    public void toggleCarousel(boolean reverse){
+    public void toggleCarousel(boolean switchOn){
         if (is_done == true) {
             is_done = false;
-            carousel_on = !carousel_on;
-            if (reverse == true){
-                carousel_power = -1*motor_power;
-            }else {
-                carousel_power = motor_power;
-            }
+            carousel_on = switchOn;
         }
     }
 
     public void checkGamePad(Gamepad gp) {
-        if (gp.b) {
-            toggleCarousel(false);
-        } else if (gp.x) {
-            toggleCarousel(false);
-        } else if (gp.y) {
-            toggleCarousel(false);
-        } else if (gp.a) {
+        if (gp.left_trigger > 0.5) {
+            toggleCarousel(true);
+        } else if (gp.right_trigger > 0.5) {
             toggleCarousel(false);
         }
 
     }
+
 
     public void stop(){ isRunning = false; }
 

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.Common.tataMecanumDrive;
 import org.firstinspires.ftc.teamcode.tata.RobotArm.RobotArmDriver;
@@ -20,8 +21,6 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Trajectory traj0, traj1, traj2, traj3, traj4, traj5, traj6, traj6A, traj7, traj8;
-        Trajectory traj_last;
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
         int barCodeLoc = sensorDriver.getBarCodeBLUE();
@@ -43,6 +42,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         robot.followTrajectorySequence(identifyTeamMarker);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         barCodeLoc = sensorDriver.getBarCodeBLUE();
         telemetry.addData("Started. Element position", barCodeLoc);
@@ -68,6 +68,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 })
                 .build();
         robot.followTrajectorySequence(pickTeamMarker);
+        PoseStorage.currentPose = robot.getPoseEstimate();
         sleep(500);
 
         if (barCodeLoc == 3) {
@@ -104,6 +105,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 .lineToLinearHeading(new Pose2d(-56, 43, Math.toRadians(90)))
                 .build();
         robot.followTrajectorySequence(moveToDropCarousel);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         dsParams = sensorDriver.getRobotSensorParams();
 
@@ -128,6 +130,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
 
                 .build();
         robot.followTrajectorySequence(moveToStartCarousel);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         stopThreads();
 

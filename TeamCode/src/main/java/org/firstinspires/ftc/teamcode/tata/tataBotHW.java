@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.R;
+import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.RobotArm.RobotArmDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotCarousel.RC.RobotCaroselDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotDrivetrain.RobotDriveTrainDriver;
@@ -53,7 +54,7 @@ public class tataBotHW {
         Thread armDriverThread = new Thread(armDriver);
         armDriverThread.start();
 
-        crDriver     = new RobotCaroselDriver(hwMap, 200);
+        crDriver     = new RobotCaroselDriver(hwMap, 200, tataAutonomousBase.SideColor.Blue);
         Thread crDriverThread = new Thread(crDriver);
         crDriverThread.start();
 

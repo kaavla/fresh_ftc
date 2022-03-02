@@ -205,6 +205,9 @@ public class RobotSlideHW {
         RobotLog.ii("SL124", "moveSlideTo - Enter %2f", deltaInch);
         int newPos = 0;
 
+        SL1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SL2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         //Check of the motor is not already running
         if (SL1.isBusy() || SL2.isBusy()) {
             RobotLog.ii("SL124", "Motors Busy early exit");
@@ -246,6 +249,8 @@ public class RobotSlideHW {
     }
 
     public void motorSetRawSpeed(double speed) {
+        SL1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SL2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         SL1.setPower(speed);
         SL2.setPower(speed);
     }

@@ -50,6 +50,7 @@ public class tataAutonomousBase extends LinearOpMode {
 
     public RobotImuDriver imuDriver;
     public RobotImuParams imuParams;
+    public SideColor currSide = SideColor.Blue;
 
     public ElapsedTime runtime = new ElapsedTime();
 
@@ -59,6 +60,14 @@ public class tataAutonomousBase extends LinearOpMode {
     }
 
     public void init(HardwareMap hwMap, Pose2d startPose) {
+        PoseStorage.startPose = startPose;
+
+        if (startPose.getY() < 0) {
+            currSide = SideColor.Red;
+        } else {
+            currSide = SideColor.Blue;
+        }
+
         robot = new tataMecanumDrive(hardwareMap);
 
         sensorDriver = new RobotSensorDriver(hwMap, 100);
@@ -77,7 +86,7 @@ public class tataAutonomousBase extends LinearOpMode {
         Thread armDriverThread = new Thread(armDriver);
         armDriverThread.start();
 
-        crDriver = new RobotCaroselDriver(hwMap, 200);
+        crDriver = new RobotCaroselDriver(hwMap, 200, currSide);
         Thread crDriverThread = new Thread(crDriver);
         crDriverThread.start();
 

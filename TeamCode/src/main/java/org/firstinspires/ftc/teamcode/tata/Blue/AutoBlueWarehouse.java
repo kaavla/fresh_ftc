@@ -5,7 +5,10 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 //import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
+import org.firstinspires.ftc.teamcode.tata.Common.tataMecanumDrive;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -48,6 +51,18 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
             stopThreads();
             return;
         }
+
+        /*TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
+                .forward(7.5, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        robot.followTrajectorySequence(identifyTeamMarker);
+
+        barCodeLoc = sensorDriver.getBarCodeBLUE();
+        telemetry.addData("Started. Element position", barCodeLoc);
+        telemetry.update();
+        sleep(1000); */
+
         int lvl = barCodeLoc;
         TrajectorySequence dropPreloadedGE = getTrajectorySequenceBuilder()
                 .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 80 ), new MecanumVelocityConstraint( 50, 14.1 ) ) ) )
@@ -65,7 +80,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                     slideDriver.dropGameElement();
                     moveSlideToPos(lvl, SlideDirection.IN);
                 } )
-                .waitSeconds( 0.8 )
+                .waitSeconds( 1 )
 
                 //Grab Block 1 from warehouse
                 .setTangent( Math.toRadians( 90) )
@@ -74,6 +89,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
 
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         double headingCorrection = correctOrientationUsingImu(0);
 
@@ -84,41 +100,42 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 .waitSeconds(0.3)
                 .strafeLeft(0.5)
                 .addTemporalMarker( ( ) -> {
-                    inTakeDriver.toggleIntake(true);
+                   // inTakeDriver.toggleIntake(true);
                 } )
                 .forward(42)
-                .back(42)
+               // .back(42)
                 //.lineToConstantHeading( new Vector2d( 54, wallPos ) ) // 48
                 //.lineToConstantHeading( new Vector2d( 12, wallPos+1 ) )
                 .addTemporalMarker( ( ) -> {
                     //stop intake
-                    inTakeDriver.toggleIntake(true);
+                    //inTakeDriver.toggleIntake(true);
                 } )
                 .addTemporalMarker( ( ) -> {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
-                    moveSlideToPos(3, SlideDirection.OUT);
+                   // moveSlideToPos(3, SlideDirection.OUT);
                 } )
-                .setTangent( Math.toRadians( 200) )
-                .splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
+                //.setTangent( Math.toRadians( 200) )
+                //.splineToLinearHeading( new Pose2d( -4.6,41.3 , Math.toRadians(67.5) ), Math.toRadians( 270 ) )
                 //.lineToSplineHeading( new Pose2d(-4.6, 41, Math.toRadians(67.5)) )
                 .addTemporalMarker( ( ) -> {
-                    slideDriver.dropGameElement();
+                    //slideDriver.dropGameElement();
                 } )
                 .waitSeconds( 0.8 )
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.IN);
-                    moveSlideToPos(3, SlideDirection.IN);
+                    //moveSlideToPos(3, SlideDirection.IN);
                 } )
-                .setTangent( Math.toRadians( 90) )
-                .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                //.setTangent( Math.toRadians( 90) )
+                //.splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
                 //.lineToSplineHeading( new Pose2d(12, wallPos, Math.toRadians(0)) )
                 .build();
         robot.followTrajectorySequence(dropWarehouseGE1);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         headingCorrection = correctOrientationUsingImu(0);
         //Get Block 2
-        TrajectorySequence dropWarehouseGE2 = getTrajectorySequenceBuilder()
+        /*TrajectorySequence dropWarehouseGE2 = getTrajectorySequenceBuilder()
                 .turn(Math.toRadians(headingCorrection))
                 .waitSeconds(0.3)
                 .strafeLeft(0.5)
@@ -162,7 +179,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                 .lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
                 .lineToSplineHeading( new Pose2d(48, wallPos, Math.toRadians(0)) )
                 .build();
-        robot.followTrajectorySequence(parkTraj); */
+        robot.followTrajectorySequence(parkTraj);
 
         //Get Block 3 and Park
         TrajectorySequence dropWarehouseGE3 = getTrajectorySequenceBuilder()
@@ -178,6 +195,6 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                     inTakeDriver.toggleIntake(true);
                 } )
                 .build();
-        robot.followTrajectorySequence(dropWarehouseGE3);
+        robot.followTrajectorySequence(dropWarehouseGE3);*/
     }
 }

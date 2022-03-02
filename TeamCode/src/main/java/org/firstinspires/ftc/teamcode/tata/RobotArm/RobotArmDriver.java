@@ -32,7 +32,7 @@ public class RobotArmDriver implements Runnable {
         if (pos == RobotArmPreSetPos.COLLECT) {
             //Collect position
             //arm servo
-            armHW.servoSetPosRaw(0.6, 2);
+            armHW.servoSetPosRaw(0.3, 2);
             try {
                 Thread.sleep(400);
             } catch (InterruptedException e) {
@@ -130,40 +130,25 @@ public class RobotArmDriver implements Runnable {
             double leftY = gp.left_stick_y * -1;
             double leftX = gp.left_stick_x * 1;
             moveRobotArmBy(leftX, leftY, 0.0);
-        }
-        if (gp.left_bumper) {
+        } else if (gp.left_bumper) {
             armHW.servoSetPosRaw(0.7, 3);
-        }
-        if (gp.right_bumper) {
+        } else if (gp.right_bumper) {
             armHW.servoSetPosRaw(1.5,3);
+        } else if (gp.left_stick_button) {
+            moveRobotArmBy(0.0,0.0, 15);
+        } else if (gp.right_stick_button) {
+            moveRobotArmBy(0,0.0, -15);
+        } else if (gp.x) {
+            //Collect
+            moveRobotArmTo(RobotArmPreSetPos.COLLECT);
+        } else if (gp.y) {
+            moveRobotArmTo(RobotArmPreSetPos.SAVE);
+
+        } else if (gp.a) {
+            moveRobotArmTo(RobotArmPreSetPos.DROP);
         }
     }
 
-        /*
-        if (gp.b) {
-            //armHW.servoSetPosRawRelative(0.05, 2);
-            moveRobotArmBy(0.5,0.0, 0.0);
-        } else if (gp.x) {
-            //armHW.servoSetPosRawRelative(-0.05, 2);
-            moveRobotArmBy(-0.5,0.0, 0.0);
-        } else if (gp.y) {
-            moveRobotArmBy(0.0,0.5, 0.0);
-            //armHW.servoSetPosRawRelative(-0.05, 1);
-        } else if (gp.a) {
-            moveRobotArmBy(0.0,-0.5, 0.0);
-            //armHW.servoSetPosRawRelative(0.05, 1);
-        }else if (gp.left_stick_button) {
-            moveRobotArmBy(0.0,0.0, 15);
-        }else if (gp.right_stick_button) {
-            moveRobotArmBy(0,0.0, -15);
-        } else if (gp.left_bumper) {
-            //collect position
-            initArmPos(1);
-        } else if (gp.right_bumper) {
-            //drop position
-            initArmPos(2);
-        }
-        */
 
 
     public RobotArmParams getRobotParams() {
