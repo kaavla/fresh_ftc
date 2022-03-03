@@ -27,7 +27,7 @@ public class tataAutonomousBase extends LinearOpMode {
 
     public enum StartPos {
         Warehouse, //White Colored Box
-        Storage    //Red or Blue Colored box
+        Storage    //Duck Side
     }
 
     public enum SlideDirection {

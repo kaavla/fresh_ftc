@@ -27,9 +27,11 @@ public class RobotSensorDriver implements Runnable {
 
         int barCodeLoc = 1;
         //check the left front sensors
-        if ((avg_rsp.x_LF < 20) || (avg_rsp.x_LF1 < 20)) {
+        double detect_dist = 6.0;
+
+        if ((avg_rsp.x_LF < detect_dist) || (avg_rsp.x_LF1 < detect_dist)) {
             barCodeLoc = 1;
-        } else if ((avg_rsp.x_RF < 20) || (avg_rsp.x_RF1 < 20)) {
+        } else if ((avg_rsp.x_RF < detect_dist) || (avg_rsp.x_RF1 < detect_dist)) {
             barCodeLoc = 2;
         } else {
             barCodeLoc = 3;
@@ -39,10 +41,11 @@ public class RobotSensorDriver implements Runnable {
     public int getBarCodeBLUE() {
         RobotSensorParams avg_rsp = getAvg();
         int barCodeLoc = 1;
+        double detect_dist = 6.0;
         //check the left front sensors
-        if ((avg_rsp.x_RF < 20) || (avg_rsp.x_RF1 < 20)) {
+        if ((avg_rsp.x_RF < detect_dist) || (avg_rsp.x_RF1 < detect_dist)) {
             barCodeLoc = 3;
-        } else if ((avg_rsp.x_LF < 20) || (avg_rsp.x_LF1 < 20)) {
+        } else if ((avg_rsp.x_LF < detect_dist) || (avg_rsp.x_LF1 < detect_dist)) {
             barCodeLoc = 2;
         } else {
             barCodeLoc = 1;
