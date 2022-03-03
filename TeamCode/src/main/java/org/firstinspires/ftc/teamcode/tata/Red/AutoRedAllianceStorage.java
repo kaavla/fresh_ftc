@@ -41,6 +41,8 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
             return;
         }
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
+                .strafeRight(1.5, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -57,7 +59,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         TrajectorySequence pickTeamMarker = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
                     //Robot Arm to Collect Pos
-                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
+                 //   armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
                 })
                 .waitSeconds(1)
                 .lineToSplineHeading(pose)
@@ -70,7 +72,7 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
 
                 .forward(4)
                 .addTemporalMarker(() -> {
-                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
+                    //armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
                 })
                 //.waitSeconds(1.0)
                 .build();

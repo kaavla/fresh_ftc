@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.tata.Manual;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,6 +15,8 @@ import org.firstinspires.ftc.teamcode.tata.Common.tataMecanumDrive;
 import org.firstinspires.ftc.teamcode.tata.RobotArm.RobotArmDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+
+import java.util.Arrays;
 
 @TeleOp(name = "Manual Mode", group = "Linear Opmode")
 
@@ -26,6 +31,8 @@ public class ManualDrive extends tataAutonomousBase {
         Pose2d pose = new Pose2d( -10,50  , Math.toRadians(82) );
 
         TrajectorySequence dropElement = getTrajectorySequenceBuilder()
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 60 ), new MecanumVelocityConstraint( 70, 14.1 ) ) ) )
+
                 .addTemporalMarker(() -> {
                     custommoveSlideToPos(3, SlideDirection.OUT, 20.5, 0.0);
                 })

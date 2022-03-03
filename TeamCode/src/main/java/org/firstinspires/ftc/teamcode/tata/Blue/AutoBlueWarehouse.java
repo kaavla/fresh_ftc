@@ -52,8 +52,8 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
             return;
         }
 
-        /*TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
-                .forward(7.5, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
+                .forward(9, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         robot.followTrajectorySequence(identifyTeamMarker);
@@ -61,7 +61,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
         barCodeLoc = sensorDriver.getBarCodeBLUE();
         telemetry.addData("Started. Element position", barCodeLoc);
         telemetry.update();
-        sleep(1000); */
+        sleep(5000);
 
         int lvl = barCodeLoc;
         TrajectorySequence dropPreloadedGE = getTrajectorySequenceBuilder()

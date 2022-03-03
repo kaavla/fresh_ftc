@@ -29,11 +29,11 @@ public class MeepMeepPaths {
 		//BOutDuckTest rt = new BOutDuckTest();
 		//PositionGrapherTest rt = new PositionGrapherTest();
 		//TechnovaKillerAuto rt = new TechnovaKillerAuto();
-		//ShankRed1 rt = new ShankRed1();
+		ShankRed1 rt = new ShankRed1();
 		//ShankBlue1 rt = new ShankBlue1();
 		//ShankBlue2 rt = new ShankBlue2();
 		//ShankManualBlue rt = new ShankManualBlue();
-		ShankManualBlueSharedHub rt = new ShankManualBlueSharedHub();
+		//ShankManualBlueSharedHub rt = new ShankManualBlueSharedHub();
 		MeepMeep mm = new MeepMeep( 700 )
 				.setBackground( MeepMeep.Background.FIELD_FREIGHT_FRENZY )
 				.setTheme( new ColorSchemeRedDark() )

@@ -38,7 +38,9 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
         }
 
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
-                .forward(7.5, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .strafeLeft(2,tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         robot.followTrajectorySequence(identifyTeamMarker);
@@ -53,7 +55,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
         int lvl = barCodeLoc;
         TrajectorySequence pickTeamMarker = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
-                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
+                //    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
                 })
                 .waitSeconds(1)
                 .lineToSplineHeading(pose)
@@ -64,7 +66,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
 
                 .forward(4)
                 .addTemporalMarker(() -> {
-                    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
+                  //  armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.SAVE);
                 })
                 .build();
         robot.followTrajectorySequence(pickTeamMarker);
@@ -119,12 +121,12 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 .forward(dsParams.x_RF - 8)
                 .addTemporalMarker(() -> {
                     //start Carosel motor
-                    crDriver.toggleCarousel(false);
+                    crDriver.toggleCarousel(true);
                 })
                 .waitSeconds(4)
                 .addTemporalMarker(() -> {
                     //start Carosel motor
-                    crDriver.toggleCarousel(false);
+                    crDriver.toggleCarousel(true);
                 })
                 .lineToLinearHeading(new Pose2d(-65, 34, Math.toRadians(90)))//y was -37
 
