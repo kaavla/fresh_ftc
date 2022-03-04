@@ -18,6 +18,8 @@ public class RedInAutoFreight2 implements MeepMeepPath{
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
 		return drive.trajectorySequenceBuilder( new Pose2d( 6, -61, Math.toRadians( 90 ) ) )
 				.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 70 ), new MecanumVelocityConstraint( 40, 17 ) ) ) )
+				.strafeRight(1.5)
+				.forward(12)
 
 				// move to dump initial block in designated layer
 				.addTemporalMarker( ( ) -> {
@@ -25,7 +27,7 @@ public class RedInAutoFreight2 implements MeepMeepPath{
 				} )
 				.setTangent( Math.toRadians( 90 ) )
 				//.splineToLinearHeading( MeepMeepPath.getHubPositionX( -45, 90, 8, true ), Math.toRadians( 0  ) )
-				.splineToLinearHeading( new Pose2d( -4.22,-42.2 , Math.toRadians(-67.5) ), Math.toRadians( 90) )
+				.splineToLinearHeading( new Pose2d( -4.6,-40 , Math.toRadians(-82) ), Math.toRadians( 90) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
