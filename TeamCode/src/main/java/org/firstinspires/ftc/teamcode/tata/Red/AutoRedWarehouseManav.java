@@ -13,10 +13,12 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.*;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 //import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 import java.util.*;
 
 @Autonomous(name="RED - Auto - MKWarehouse", group="RED")
+@Disabled
 public class AutoRedWarehouseManav extends tataAutonomousBase {
 
     double wallPos = 61;

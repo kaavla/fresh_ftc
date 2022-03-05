@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstra
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 
 
 @Autonomous(name="SHANK BLUE - Auto - Warehouse", group="BLUE")
+@Disabled
 public class ShankBlueWarehouse extends tataAutonomousBase {
 
     double wallPos = 63;

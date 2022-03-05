@@ -107,12 +107,12 @@ public class ManualDrive extends tataAutonomousBase {
     @Override
     public void runOpMode() throws InterruptedException {
         //Blue
-        Pose2d startPose = new Pose2d(6, 61, Math.toRadians(270));
+        //Pose2d startPose = new Pose2d(6, 61, Math.toRadians(270));
 
         //Red
         //Pose2d startPose = new Pose2d(6, -61, Math.toRadians(270));
 
-        PoseStorage.startPose = startPose;
+        //PoseStorage.startPose = startPose;
 
         init(hardwareMap, PoseStorage.startPose);
         robot.setPoseEstimate( PoseStorage.currentPose);
@@ -137,11 +137,12 @@ public class ManualDrive extends tataAutonomousBase {
                 autoRunToPos();
             } else if (gamepad1.y) {
                 autoRunToWall();
-            } else if (gamepad1.a) {
+            }
+            /*else if (gamepad1.a) {
                 autoRunToSharedHub();
             } else if (gamepad1.b) {
                 autoRunToWallFromSharedHub();
-            }
+            }*/
 
             inTakeDriver.checkGamePad(gamepad1);
             frDriver.checkGamePad(gamepad1);

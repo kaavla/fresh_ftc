@@ -17,17 +17,16 @@ public class RedInAutoFreight2 implements MeepMeepPath{
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
 		return drive.trajectorySequenceBuilder( new Pose2d( 6, -61, Math.toRadians( 90 ) ) )
-				.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 70 ), new MecanumVelocityConstraint( 40, 17 ) ) ) )
-				.strafeRight(1.5)
-				.forward(12)
+				//.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )
+				.lineToLinearHeading(new Pose2d(8, -48, Math.toRadians(90)))
 
 				// move to dump initial block in designated layer
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( height );
 				} )
-				.setTangent( Math.toRadians( 90 ) )
+				.setTangent( Math.toRadians( 270+45 ) )
 				//.splineToLinearHeading( MeepMeepPath.getHubPositionX( -45, 90, 8, true ), Math.toRadians( 0  ) )
-				.splineToLinearHeading( new Pose2d( -4.6,-40 , Math.toRadians(-82) ), Math.toRadians( 90) )
+				.splineToLinearHeading( new Pose2d( -0.4,-51.5 , Math.toRadians(-67.5) ), Math.toRadians( 180-67.5) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
@@ -36,7 +35,7 @@ public class RedInAutoFreight2 implements MeepMeepPath{
 
 				// move to grab block 1
 				.setTangent( Math.toRadians( 270) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 0) )
+				.splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( -10) )
 				//.addTemporalMarker( ( ) -> {
 //				//	robot.intake.setPower( 0.6 );
 				//} )
@@ -52,12 +51,19 @@ public class RedInAutoFreight2 implements MeepMeepPath{
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.setTangent( Math.toRadians( 160) )
+
+/*				.setTangent( Math.toRadians( 160) )
 				.splineToLinearHeading( new Pose2d( -4.22,-42.2 , Math.toRadians(-67.5) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
 				} )
+
+ */
+				.setTangent(Math.toRadians(90+45))
+				.splineToLinearHeading(new Pose2d( 2.4, -51.5, Math.toRadians( -67.5 )), Math.toRadians(180-67.5))
+				.back(14)
+
 				.waitSeconds( 0.8 )
 
 				// move to grab block 2

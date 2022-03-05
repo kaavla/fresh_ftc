@@ -160,7 +160,8 @@ public class tataAutonomousBase extends LinearOpMode {
         imuParams = imuDriver.getRobotImuParams();
         double correctedHeading =imuParams.correctedHeading;
 
-        RobotLog.ii("SHANK", "targetHeading %2f, corrected heading %2f", targetHeading, correctedHeading);
+        RobotLog.ii("SHANK", "targetHeading %2f, corrected heading %2f , raw %2f (%2f)",
+                targetHeading, correctedHeading, imuParams.rawHeading, imuParams.correction);
 
         //Correction of 0 target heading because of 360 wrap around
         if (targetHeading == 0) {
