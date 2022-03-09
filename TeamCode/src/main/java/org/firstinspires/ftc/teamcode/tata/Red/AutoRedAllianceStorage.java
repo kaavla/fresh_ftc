@@ -155,7 +155,8 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
                     //start Carosel motor
                     crDriver.toggleCarousel(false);
                 })
-                .lineToLinearHeading(new Pose2d(-65, -37.5, Math.toRadians(270)))//y was -37
+                .lineToLinearHeading(new Pose2d(-65, -37.3, Math.toRadians(270)))//y was -37
+
                 .build();
 
         robot.followTrajectorySequence(moveToStartCarousel);

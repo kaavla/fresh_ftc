@@ -83,22 +83,22 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
 
         if (barCodeLoc == 1) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(180)))
-                    .back(11.5)
+                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(185)))
+                    .back(12.5)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
 
         }
         if (barCodeLoc == 2) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(180)))
+                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(187)))
                     .back(12)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
         if (barCodeLoc == 3) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(180)))
+                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(187)))
                     .back(11)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
@@ -140,7 +140,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                     //start Carosel motor
                     crDriver.toggleCarousel(false);
                 })
-                .lineToLinearHeading(new Pose2d(-65, 37.5, Math.toRadians(90)))//y was -37
+                .lineToLinearHeading(new Pose2d(-65, 32.7, Math.toRadians(90)))//y was -37
 
                 .build();
         robot.followTrajectorySequence(moveToStartCarousel);
