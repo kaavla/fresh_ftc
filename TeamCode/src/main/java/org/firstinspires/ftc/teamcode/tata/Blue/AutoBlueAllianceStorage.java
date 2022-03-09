@@ -2,7 +2,11 @@ package org.firstinspires.ftc.teamcode.tata.Blue;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -14,6 +18,8 @@ import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.util.Arrays;
+
 @Autonomous(name = "BLUE - Auto - AllianceStorage", group = "BLUE")
 public class AutoBlueAllianceStorage extends tataAutonomousBase {
     public Pose2d startPose = new Pose2d(-42.25, 63.5, Math.toRadians(270));
@@ -23,11 +29,12 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
 
         init(hardwareMap, startPose);
         robot.setPoseEstimate(startPose);
+
         int barCodeLoc = sensorDriver.getBarCodeBLUE();
         RobotSensorParams dsParams = new RobotSensorParams();
 
-        while (!isStopRequested() && !isStarted()) {
-        }
+        //while (!isStopRequested() && !isStarted()) {
+        //}
 
         waitForStart();
 
@@ -37,19 +44,20 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
             return;
         }
 
+        //Move towards team marker
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
-                .strafeLeft(2,tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .forward(12, tataMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        tataMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )
+                .strafeLeft(1.5)
+                .forward(12)
                 .build();
+
         robot.followTrajectorySequence(identifyTeamMarker);
         PoseStorage.currentPose = robot.getPoseEstimate();
 
+        sleep(1000);
         barCodeLoc = sensorDriver.getBarCodeBLUE();
         telemetry.addData("Started. Element position", barCodeLoc);
         telemetry.update();
-        sleep(1000);
 
         Pose2d pose = getTeamMarkerCoord(SideColor.Blue, StartPos.Storage, barCodeLoc);
         int lvl = barCodeLoc;
@@ -57,7 +65,7 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 .addTemporalMarker(() -> {
                 //    armDriver.moveRobotArmTo(RobotArmDriver.RobotArmPreSetPos.COLLECT);
                 })
-                .waitSeconds(1)
+                //.waitSeconds(1)
                 .lineToSplineHeading(pose)
                 .addTemporalMarker(() -> {
                     moveSlideToPos(lvl, SlideDirection.OUT);
@@ -73,27 +81,27 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
         PoseStorage.currentPose = robot.getPoseEstimate();
         sleep(500);
 
-        if (barCodeLoc == 3) {
+        if (barCodeLoc == 1) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 25, Math.toRadians(180)))
+                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(185)))
+                    .back(12.5)
+                    .build();
+            robot.followTrajectorySequence(moveToDropGE);
+
+        }
+        if (barCodeLoc == 2) {
+            TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
+                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(187)))
                     .back(12)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
         }
-        if (barCodeLoc == 2) {
+        if (barCodeLoc == 3) {
             TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 25, Math.toRadians(180)))
-                    .back(13)
+                    .lineToSplineHeading(new Pose2d(-44, 24, Math.toRadians(187)))
+                    .back(11)
                     .build();
             robot.followTrajectorySequence(moveToDropGE);
-        }
-        if (barCodeLoc == 1) {
-            TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
-                    .lineToSplineHeading(new Pose2d(-44, 25, Math.toRadians(180)))
-                    .back(15)
-                    .build();
-            robot.followTrajectorySequence(moveToDropGE);
-
         }
 
         sleep(1000);
@@ -104,21 +112,25 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                     moveSlideToPos(lvl, SlideDirection.IN);
                 })
 
-                .lineToLinearHeading(new Pose2d(-56, 43, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-60, 45, Math.toRadians(90)))
                 .build();
         robot.followTrajectorySequence(moveToDropCarousel);
         PoseStorage.currentPose = robot.getPoseEstimate();
 
+        sleep(1000);
         dsParams = sensorDriver.getRobotSensorParams();
 
         telemetry.addData("Distance on Front %2f", dsParams.x_RF1);
         telemetry.addData("Distance on Right %2f", dsParams.x_LS);
         telemetry.update();
+        RobotLog.ii("SHANK", "Duck Side Blue - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF1);
 
         TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
-                .strafeLeft(dsParams.x_LS - 1)
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )
+
+                .strafeLeft( Math.min(dsParams.x_LS - 1, 6))
                 .waitSeconds(0.2)
-                .forward(dsParams.x_RF - 8)
+                .forward(Math.min(dsParams.x_RF - 8, 12))
                 .addTemporalMarker(() -> {
                     //start Carosel motor
                     crDriver.toggleCarousel(true);
@@ -126,9 +138,9 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
                 .waitSeconds(4)
                 .addTemporalMarker(() -> {
                     //start Carosel motor
-                    crDriver.toggleCarousel(true);
+                    crDriver.toggleCarousel(false);
                 })
-                .lineToLinearHeading(new Pose2d(-65, 34, Math.toRadians(90)))//y was -37
+                .lineToLinearHeading(new Pose2d(-65, 32.7, Math.toRadians(90)))//y was -37
 
                 .build();
         robot.followTrajectorySequence(moveToStartCarousel);

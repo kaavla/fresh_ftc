@@ -4,10 +4,12 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 
 @Autonomous(name = "RED - Spline3 - AllianceStorage", group = "RED")
+@Disabled
 public class Spline3Test extends tataAutonomousBase {
     public Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 

@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.tata.Common.Utils;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(name = "RED - SHANK1 - AllianceStorage", group = "RED")
+@Disabled
 public class SHANK1Test extends tataAutonomousBase {
     public Pose2d startPose = new Pose2d(5.75, 61, Math.toRadians(270)); //change x
 

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 @Autonomous(name="Tata Auto path simple", group="tata")
-//@Disabled
+@Disabled
 public class eTataBotAutoPath extends tataBotCommon {
 
     //@Override

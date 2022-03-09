@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstra
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 
 
 @Autonomous(name="SHANK BLUE - Auto - Warehouse", group="BLUE")
+@Disabled
 public class ShankBlueWarehouse extends tataAutonomousBase {
 
     double wallPos = 63;
@@ -87,20 +89,24 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
 
         //Get Block #1
         TrajectorySequence dropPreloadedGE1 = getTrajectorySequenceBuilder()
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 60 ), new MecanumVelocityConstraint( 53, 14.1 ) ) ) )
+
                 //.turn(Math.toRadians(headingCorrection))
                 //.waitSeconds(0.3)
-                .strafeLeft(1.5)
+                //.strafeLeft(1.5)
 
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.intakeSet(true, true);
                 } )
-                .forward(40)
-                .waitSeconds(0.2)
+                .forward(45)
+                //.waitSeconds(0.2)
                 .addTemporalMarker( ( ) -> {
                     inTakeDriver.intakeSet(true, false);
                 } )
+
+                .back(45)
                 .waitSeconds(0.2)
-                .back(40)
+
                 .addTemporalMarker( ( ) -> {
                     //slideDriver.moveSlideToDropPos(lvl, RobotSlideDriver.SlideDirection.OUT);
                     //moveSlideToPos(1, SlideDirection.OUT);
@@ -121,7 +127,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .addTemporalMarker( ( ) -> {
                     slideDriver.dropGameElement();
                 } )
-                .waitSeconds( 1.2 )
+                .waitSeconds( 1 )
 
                 .addTemporalMarker( ( ) -> {
                     //robot.liftToShippingHubHeight( height );
@@ -132,13 +138,18 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
 
                 .setTangent( Math.toRadians( 90) )
                 .splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 10) )
+                .strafeLeft(2)
+                .forward(30)
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE1);
         PoseStorage.currentPose = robot.getPoseEstimate();
 
         //headingCorrection = correctOrientationUsingImu(0);
         //Get Block 2
+        /*
         TrajectorySequence dropPreloadedGE2 = getTrajectorySequenceBuilder()
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 60 ), new MecanumVelocityConstraint( 70, 14.1 ) ) ) )
+
                 //.turn(Math.toRadians(headingCorrection))
                // .waitSeconds(0.3)
                 .strafeLeft(1)
@@ -183,7 +194,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                     //moveSlideToPos(3, SlideDirection.IN);
                 } )
                 */
-
+        /*
                 //.forward(4)
                 .setTangent( Math.toRadians( 90) )
                 .splineToSplineHeading( new Pose2d( 42, wallPos+4, Math.toRadians( 0 ) ), Math.toRadians( 10) )
@@ -211,7 +222,7 @@ public class ShankBlueWarehouse extends tataAutonomousBase {
                 .build();
         robot.followTrajectorySequence(dropPreloadedGE3);
         PoseStorage.currentPose = robot.getPoseEstimate();
-
+        */
         RobotLog.ii("SHANK", "Reached here...end");
 
     }

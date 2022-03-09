@@ -19,6 +19,14 @@ public class RobotCarouselHW {
         currSide = sc;
 
     }
+    public void reverseDir() {
+        if (currSide == tataAutonomousBase.SideColor.Blue) {
+            currSide = tataAutonomousBase.SideColor.Red;
+        } else {
+            currSide = tataAutonomousBase.SideColor.Blue;
+        }
+
+    }
 
     public void setPower(double power){
         if (currSide == tataAutonomousBase.SideColor.Blue) {

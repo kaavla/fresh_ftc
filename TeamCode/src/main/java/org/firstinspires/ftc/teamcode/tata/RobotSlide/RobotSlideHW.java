@@ -32,7 +32,7 @@ public class RobotSlideHW {
     //6. Divide ERF/(Pi*D) to get ticks per inch
     //private static final double TICK_COUNTS_PER_INCH = (19.2*28)/(2 * 3.1415);
     private static final double TICK_COUNTS_PER_INCH = (13.7 * 28) / (1 * 3.1415);
-    private static final double MOTOR_SPEED = 1.0;
+    private static final double MOTOR_SPEED = 0.1;
 
     private static final double MAX_SLIDE_POS_INCH = 22;
     private static final double MIN_SLIDE_POS_INCH = 0;

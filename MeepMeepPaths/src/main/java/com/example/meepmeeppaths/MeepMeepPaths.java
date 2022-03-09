@@ -24,12 +24,12 @@ public class MeepMeepPaths {
 	public static void main( String[] args ) {
 		//BlueInAutoDuck rt = new BlueInAutoDuck();
 		//BlueInAutoFreight2 rt = new BlueInAutoFreight2();
-		//RedInAutoFreight2 rt = new RedInAutoFreight2();
+		RedInAutoFreight2 rt = new RedInAutoFreight2();
 		//BlueOutAutoDuck rt = new BlueOutAutoDuck();
 		//BOutDuckTest rt = new BOutDuckTest();
 		//PositionGrapherTest rt = new PositionGrapherTest();
 		//TechnovaKillerAuto rt = new TechnovaKillerAuto();
-		ShankRed1 rt = new ShankRed1();
+		//ShankRed1 rt = new ShankRed1();
 		//ShankBlue1 rt = new ShankBlue1();
 		//ShankBlue2 rt = new ShankBlue2();
 		//ShankManualBlue rt = new ShankManualBlue();

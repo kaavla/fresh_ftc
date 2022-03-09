@@ -18,14 +18,18 @@ public class BlueInAutoFreight2 implements MeepMeepPath{
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
 		return drive.trajectorySequenceBuilder( new Pose2d( 6, 61, Math.toRadians( 270 ) ) )
 				.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 70 ), new MecanumVelocityConstraint( 40, 17 ) ) ) )
+				.strafeLeft(2)
+				.forward(12)
+				.waitSeconds(2)
 
 				// move to dump initial block in designated layer
 				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( height );
 				} )
-				.setTangent( Math.toRadians( 270 ) )
+				.setTangent( Math.toRadians( 90 +45) )
 				//.splineToLinearHeading( MeepMeepPath.getHubPositionX( -45, 90, 8, true ), Math.toRadians( 0  ) )
-				.splineToLinearHeading( new Pose2d( -4.3,42.3 , Math.toRadians(67.5) ), Math.toRadians( 300 ) )
+				.splineToLinearHeading( new Pose2d( -0.4,51.5 , Math.toRadians(67.5) ), Math.toRadians( 180+67.5 ) )
+				.back(11.5)
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );

@@ -55,6 +55,10 @@ public class RobotCaroselDriver implements Runnable{
             toggleCarousel(true);
         } else if (gp.right_trigger > 0.5) {
             toggleCarousel(false);
+        } else if (gp.b) {
+            //reverse the direction
+            hw.reverseDir();
+
         }
 
     }

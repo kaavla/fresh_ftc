@@ -12,7 +12,7 @@ public class testRobotImu extends LinearOpMode {
     public RobotImuParams params;
     @Override
     public void runOpMode() {
-        driver = new RobotImuDriver(hardwareMap, 300, 270);
+        driver = new RobotImuDriver(hardwareMap, 300, 90);
         Thread driverThread = new Thread(driver);
         driverThread.start();
 

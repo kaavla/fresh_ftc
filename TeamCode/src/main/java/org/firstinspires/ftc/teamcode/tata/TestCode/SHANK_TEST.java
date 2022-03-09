@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tata.TestCode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 import org.firstinspires.ftc.teamcode.tata.RobotArm.RobotArmDriver;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(name = "SHANK test", group = "RED")
+@Disabled
 public class SHANK_TEST extends tataAutonomousBase {
     public Pose2d startPose = new Pose2d(-42.25, -63.5, Math.toRadians(90));
 
