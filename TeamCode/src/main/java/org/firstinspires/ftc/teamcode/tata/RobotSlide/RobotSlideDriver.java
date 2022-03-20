@@ -74,11 +74,11 @@ public class RobotSlideDriver implements Runnable {
         //moveRobotSlideBy(10,0);
 
         if (gp.dpad_left) {
-            slideHW.motorSetRawSpeed(0.95);
-            //moveRobotSlideBy(2,0);
+            slideHW.motorSetRawSpeed(1.0);
+            //moveRobotSlideBy(3,0);
         } else if (gp.dpad_right) {
-            slideHW.motorSetRawSpeed(-0.95);
-            //moveRobotSlideBy(-2,0);
+            slideHW.motorSetRawSpeed(-1);
+            //moveRobotSlideBy(-3,0);
 
         } else if (gp.dpad_up) {
             dropGameElement();
