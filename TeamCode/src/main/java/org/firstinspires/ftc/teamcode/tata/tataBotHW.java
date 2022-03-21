@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 public class tataBotHW {
     public RobotDriveTrainDriver dtDriver;
@@ -42,7 +43,7 @@ public class tataBotHW {
         Thread sensorDriverThread = new Thread(sensorDriver);
         sensorDriverThread.start();
 
-        inTakeDriver = new RobotIntakeDriver(hwMap, 2000);
+        inTakeDriver = new RobotIntakeDriver(hwMap, 2000, telemetry);
         Thread intakeDriverThread = new Thread(inTakeDriver);
         intakeDriverThread.start();
 

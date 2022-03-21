@@ -74,7 +74,7 @@ public class tataAutonomousBase extends LinearOpMode {
         Thread sensorDriverThread = new Thread(sensorDriver);
         sensorDriverThread.start();
 
-        inTakeDriver = new RobotIntakeDriver(hwMap, 2000);
+        inTakeDriver = new RobotIntakeDriver(hwMap, 2000, telemetry);
         Thread intakeDriverThread = new Thread(inTakeDriver);
         intakeDriverThread.start();
 

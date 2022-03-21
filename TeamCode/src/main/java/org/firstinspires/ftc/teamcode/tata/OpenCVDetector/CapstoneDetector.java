@@ -26,18 +26,22 @@ public class CapstoneDetector extends OpenCvPipeline {
         pos2,
         pos3
     }
-    private Location location;
+    private Location location = Location.pos1;
 
-    static final Rect CAP_LEFT_ROI = new Rect(
-            new Point(50, 0),
-            new Point(170, 75));
-    static final Rect CAP_RIGHT_ROI = new Rect(
-            new Point(200, 0),
-            new Point(320, 75));
-    static double PERCENT_COLOR_THRESHOLD = 0.2;
+    private Rect CAP_LEFT_ROI = new Rect(
+            new Point(50, 25),
+            new Point(150, 125));
+    private Rect CAP_RIGHT_ROI = new Rect(
+            new Point(170, 25),
+            new Point(270, 125));
+    static double PERCENT_COLOR_THRESHOLD = 0.1;
+    private tataAutonomousBase.SideColor side;
 
-    public CapstoneDetector(Telemetry t) {
+    public CapstoneDetector(Telemetry t, tataAutonomousBase.SideColor sc) {
+
         telemetry = t;
+        side = sc;
+
     }
 
     @Override
@@ -53,6 +57,15 @@ public class CapstoneDetector extends OpenCvPipeline {
         //CHANGE THIS ONCE U RUN CODE
 
         Core.inRange(mat, lowHSV, highHSV, mat);
+        if (side == tataAutonomousBase.SideColor.Red) {
+            CAP_LEFT_ROI = new Rect(
+                    new Point(70, 25),
+                    new Point(170, 125));
+
+            CAP_RIGHT_ROI = new Rect(
+                    new Point(200, 25),
+                    new Point(300, 125));
+        }
 
         Mat left = mat.submat(CAP_LEFT_ROI);
         Mat right = mat.submat(CAP_RIGHT_ROI);
@@ -64,7 +77,7 @@ public class CapstoneDetector extends OpenCvPipeline {
         right.release();
 
         telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
-        telemetry.addData(                                                                                                                                                                                                                                                                                      "Right raw value", (int) Core.sumElems(right).val[0]);
+        telemetry.addData("Right raw value", (int) Core.sumElems(right).val[0]);
         telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
         telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
 

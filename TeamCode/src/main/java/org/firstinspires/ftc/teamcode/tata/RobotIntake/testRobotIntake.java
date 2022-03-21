@@ -13,7 +13,7 @@ public class testRobotIntake extends LinearOpMode {
     private double motor_power = 1.0;
     @Override
     public void runOpMode() {
-        driver = new RobotIntakeDriver(hardwareMap, 200);
+        driver = new RobotIntakeDriver(hardwareMap, 200, telemetry);
         Thread driverThread = new Thread(driver);
         driverThread.start();
 
@@ -25,9 +25,11 @@ public class testRobotIntake extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             //driver.checkGamePad(gamepad1);
-            driver.toggleIntake(true);
-            sleep(4000);
-            driver.toggleIntake(true);
+            driver.intakeSet(true, true);
+            //driver.toggleIntake(true);
+            sleep(6000);
+            //driver.toggleIntake(true);
+            driver.intakeSet(false, true);
 
             idle();
         }

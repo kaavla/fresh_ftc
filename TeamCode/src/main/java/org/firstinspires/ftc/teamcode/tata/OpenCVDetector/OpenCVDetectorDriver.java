@@ -10,6 +10,10 @@ import org.firstinspires.ftc.teamcode.tata.RobotCarousel.RC.RobotCarouselParams;
 
 
 public class OpenCVDetectorDriver implements Runnable{
+    public enum RobotCamera {
+        MAIN,
+        INTAKE
+    }
     private OpenCVDetectorHW hw = new OpenCVDetectorHW();
 
     private double delta_x   = 0.0;
@@ -25,13 +29,16 @@ public class OpenCVDetectorDriver implements Runnable{
     private int sleepTime;
 
     private int markerPos = 0;
+    private RobotCamera cameraType;
 
-    public OpenCVDetectorDriver(HardwareMap ahwMap, int threadSleepDelay, tataAutonomousBase.SideColor sc, Telemetry t){
-        hw.init(ahwMap, sc, t);
+    public OpenCVDetectorDriver(HardwareMap ahwMap, int threadSleepDelay, RobotCamera ct, tataAutonomousBase.SideColor sc, Telemetry t){
+        hw.init(ahwMap, ct, sc, t);
         sleepTime = threadSleepDelay;
+        cameraType = ct;
     }
 
     private void markerPosUpdate(){
+
         markerPos = hw.getLocation();
     }
 

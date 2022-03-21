@@ -3,9 +3,17 @@ package org.firstinspires.ftc.teamcode.tata.RobotIntake;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
+import org.firstinspires.ftc.teamcode.tata.OpenCVDetector.OpenCVDetectorDriver;
+import org.firstinspires.ftc.teamcode.tata.OpenCVDetector.OpenCVDetectorHW;
+
 
 public class RobotIntakeDriver implements Runnable{
     private RobotIntakeHW hw = new RobotIntakeHW();
+    private OpenCVDetectorHW cameraHw = new OpenCVDetectorHW();
+    boolean autoTurnOff = false;
+
 
     private double delta_x   = 0.0;
     private boolean is_done  = true;
@@ -19,12 +27,18 @@ public class RobotIntakeDriver implements Runnable{
     //Sleep time interval (milliseconds) for the position update thread
     private int sleepTime;
 
-    public RobotIntakeDriver(HardwareMap ahwMap, int threadSleepDelay){
+    public RobotIntakeDriver(HardwareMap ahwMap, int threadSleepDelay, Telemetry t){
         hw.init(ahwMap);
+
+        //Side Color does not matter for Intake camera. We just give Red as default
+        cameraHw.init(ahwMap, OpenCVDetectorDriver.RobotCamera.INTAKE, tataAutonomousBase.SideColor.Red, t);
+
         sleepTime = threadSleepDelay;
+        autoTurnOff = true;
     }
 
     private void robotIntakeAction(){
+
         if (is_done == false) {
             is_done = true;
             if (intake_on) {
@@ -32,6 +46,15 @@ public class RobotIntakeDriver implements Runnable{
             } else {
                 hw.setPower(0.0);
             }
+        }
+
+        if (autoTurnOff && intake_on) {
+            if (cameraHw.getLocation() == 1){
+                //Game element has been collected
+                //Automatically reverse the intake
+                hw.setPower(0.0);
+            }
+
         }
     }
 
@@ -54,17 +77,19 @@ public class RobotIntakeDriver implements Runnable{
     }
     public void intakeSet(boolean isOn, boolean isCollecting){
         //manav function
+        intake_on = isOn;
        if(!isOn){
            hw.stopIntake();
        }else{
            if(isCollecting){
-               hw.startIntake(-1.0);
+               hw.startIntake(-1*motor_power);
            }else{
-               hw.startIntake(1.0);
+               hw.startIntake(motor_power);
            }
        }
     }
     public void checkGamePad(Gamepad gp) {
+        autoTurnOff = false; //Manual Mode . dont use intake camera?
         if (gp.left_trigger > 0.5) {
             hw.setPower(intake_power);
         } else if (gp.right_trigger > 0.5) {
