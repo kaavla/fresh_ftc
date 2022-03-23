@@ -16,11 +16,7 @@ public class OpenCVDetectorDriver implements Runnable{
     }
     private OpenCVDetectorHW hw = new OpenCVDetectorHW();
 
-    private double delta_x   = 0.0;
     private boolean is_done  = true;
-    private boolean carousel_on  = false;
-    private double motor_power = 0.95;
-    private double carousel_power = motor_power;
 
     //Thead run condition
     private boolean isRunning = true;

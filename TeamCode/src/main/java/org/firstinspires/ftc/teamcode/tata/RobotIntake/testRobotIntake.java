@@ -30,6 +30,7 @@ public class testRobotIntake extends LinearOpMode {
             sleep(6000);
             //driver.toggleIntake(true);
             driver.intakeSet(false, true);
+            sleep(1000);
 
             idle();
         }

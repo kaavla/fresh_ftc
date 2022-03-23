@@ -15,7 +15,8 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 public class OpenCVDetectorHW {
 
-    private OpenCvWebcam webcam;
+    private OpenCvWebcam webcamMain;
+    private OpenCvWebcam webcamIntake;
     private Telemetry telemetry;
     private CapstoneDetector detector = null;
     private IntakeCapstoneDetector intakeDetector = null;
@@ -24,20 +25,20 @@ public class OpenCVDetectorHW {
     private OpenCVDetectorDriver.RobotCamera camera_type;
 
     public void init(HardwareMap ahwMap, OpenCVDetectorDriver.RobotCamera cameraType, tataAutonomousBase.SideColor sc, Telemetry t) {
-        RobotLog.ii("C1234", "OpenCVInit - exit");
         telemetry = t;
         camera_type = cameraType;
-        int cameraMonitorViewId = ahwMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
-                "id",ahwMap.appContext.getPackageName());
         if (cameraType == OpenCVDetectorDriver.RobotCamera.MAIN) {
+            RobotLog.ii("SHANK", "OpenCVInit - enter, MAIN");
             //Main Camera that detects the team markers
-            webcam = OpenCvCameraFactory.getInstance().createWebcam(ahwMap.get(WebcamName.class, "mainWC"), cameraMonitorViewId);
+            int cameraMonitorViewId = ahwMap.appContext.getResources().getIdentifier("cameraMonitorViewId",
+                    "id",ahwMap.appContext.getPackageName());
+            webcamMain = OpenCvCameraFactory.getInstance().createWebcam(ahwMap.get(WebcamName.class, "mainWC"), cameraMonitorViewId);
             detector = new CapstoneDetector(telemetry, sc);
-            webcam.setPipeline(detector);
-            webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            webcamMain.setPipeline(detector);
+            webcamMain.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
                 public void onOpened() {
-                    webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                    webcamMain.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
                 }
 
                 @Override
@@ -45,14 +46,15 @@ public class OpenCVDetectorHW {
                 }
             });
         } else {
+            RobotLog.ii("SHANK", "OpenCVInit - enter, INTAKE ");
             //Intake camera
-            webcam = OpenCvCameraFactory.getInstance().createWebcam(ahwMap.get(WebcamName.class, "intakeWC"), cameraMonitorViewId);
+            webcamIntake = OpenCvCameraFactory.getInstance().createWebcam(ahwMap.get(WebcamName.class, "intakeWC"));
             intakeDetector = new IntakeCapstoneDetector(telemetry);
-            webcam.setPipeline(intakeDetector);
-            webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            webcamIntake.setPipeline(intakeDetector);
+            webcamIntake.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
                 public void onOpened() {
-                    webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                    webcamIntake.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
                 }
 
                 @Override
@@ -67,10 +69,14 @@ public class OpenCVDetectorHW {
     }
 
     public void stop(){
-        RobotLog.ii("C1234", "OpenCVInit - Stop enter");
+        if (camera_type == OpenCVDetectorDriver.RobotCamera.MAIN) {
+            RobotLog.ii("C1234", "OpenCVInit - Stop enter MAIN");
+            webcamMain.stopStreaming();
 
-        webcam.stopStreaming();
-        RobotLog.ii("C1234", "OpenCVInit - Stop Exit");
+        } else {
+            RobotLog.ii("C1234", "OpenCVInit - Stop enter INTAKE");
+            webcamIntake.stopStreaming();
+        }
 
     }
 
@@ -116,7 +122,7 @@ public class OpenCVDetectorHW {
                     break;
             }
         }
-        RobotLog.ii("C1234", "OpenCVInit - markerloc %d", markerLoc);
+        //RobotLog.ii("C1234", "OpenCVInit - markerloc %d", markerLoc);
 
         return markerLoc;
     }

@@ -39,7 +39,7 @@ public class tataBotHW {
         Thread dtDriverThread = new Thread(dtDriver);
         dtDriverThread.start();
 
-        sensorDriver = new RobotSensorDriver(hwMap, 100);
+        sensorDriver = new RobotSensorDriver(hwMap, 100, telemetry);
         Thread sensorDriverThread = new Thread(sensorDriver);
         sensorDriverThread.start();
 

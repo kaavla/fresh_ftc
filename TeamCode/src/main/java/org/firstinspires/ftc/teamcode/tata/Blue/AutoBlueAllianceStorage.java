@@ -120,10 +120,9 @@ public class AutoBlueAllianceStorage extends tataAutonomousBase {
         sleep(1000);
         dsParams = sensorDriver.getRobotSensorParams();
 
-        telemetry.addData("Distance on Front %2f", dsParams.x_RF1);
         telemetry.addData("Distance on Right %2f", dsParams.x_LS);
         telemetry.update();
-        RobotLog.ii("SHANK", "Duck Side Blue - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF1);
+        RobotLog.ii("SHANK", "Duck Side Blue - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF);
 
         TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
                 .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )

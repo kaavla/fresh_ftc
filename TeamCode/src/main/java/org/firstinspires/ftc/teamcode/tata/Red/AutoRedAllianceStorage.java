@@ -134,18 +134,17 @@ public class AutoRedAllianceStorage extends tataAutonomousBase {
         sleep(1000);
         dsParams = sensorDriver.getRobotSensorParams();
 
-        telemetry.addData("Distance on Front %2f", dsParams.x_LF1);//was using LF
         telemetry.addData("Distance on Right %2f", dsParams.x_RS);
         telemetry.update();
 
-        RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF1);
+        RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF);
 
 
         TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
                 .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )
                 .strafeRight(Math.min(dsParams.x_RS - 1, 6))
                 .waitSeconds(0.2)
-                .forward(Math.min(dsParams.x_LF1 - 8, 12))  //Carousel if of radius 7.5 inch //was using LF
+                .forward(Math.min(dsParams.x_LF - 8, 12))  //Carousel if of radius 7.5 inch //was using LF
                 .addTemporalMarker(() -> {
                     //start Carosel motor
                     crDriver.toggleCarousel(true);

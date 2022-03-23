@@ -24,8 +24,10 @@ public class testRobotCarousel extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            driver.checkGamePad(gamepad1);
-            sleep(50);
+            //driver.checkGamePad(gamepad1);
+            driver.toggleCarousel(true);
+            sleep(5000);
+            driver.toggleCarousel(false);
             idle();
         }
         driver.stop();

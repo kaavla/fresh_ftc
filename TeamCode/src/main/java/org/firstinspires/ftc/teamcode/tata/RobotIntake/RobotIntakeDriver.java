@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.tata.RobotIntake;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
@@ -42,17 +43,20 @@ public class RobotIntakeDriver implements Runnable{
         if (is_done == false) {
             is_done = true;
             if (intake_on) {
-                hw.setPower(intake_power);
+                intakeSet(true, true);
             } else {
-                hw.setPower(0.0);
+                intakeSet(false, false);;
             }
         }
 
         if (autoTurnOff && intake_on) {
-            if (cameraHw.getLocation() == 1){
+            if (isElementCollected()){
+                RobotLog.ii("SHANK", "AutoturnOFF - Basket full stopping motor");
+
                 //Game element has been collected
                 //Automatically reverse the intake
-                hw.setPower(-1*0.5);
+                //hw.setPower(1*0.5);
+                intakeSet(true, false);
 
             }
 
@@ -96,13 +100,19 @@ public class RobotIntakeDriver implements Runnable{
        }
     }
     public void checkGamePad(Gamepad gp) {
-        autoTurnOff = false; //Manual Mode . dont use intake camera?
-        if (gp.left_trigger > 0.5) {
+        autoTurnOff = true; //Manual Mode . dont use intake camera?
+
+        //if (gp.left_trigger > 0.5) {
+        if (gp.a) {
             hw.setPower(intake_power);
-        } else if (gp.right_trigger > 0.5) {
+            intake_on = true;
+ //       } else if (gp.right_trigger > 0.5) {
+        } else if (gp.b) {
             hw.setPower(-1*intake_power);
+            intake_on = true;
         } else {
             hw.setPower(0.0);
+            intake_on = false;
         }
 
     }

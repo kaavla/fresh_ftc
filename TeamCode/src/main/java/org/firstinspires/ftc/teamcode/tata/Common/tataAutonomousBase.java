@@ -74,6 +74,16 @@ public class tataAutonomousBase extends LinearOpMode {
         //Empty Function
     }
 
+    public void stopMainCamera() {
+        openCVMainDriver.stop();
+    }
+
+/*    public void startIntake(HardwareMap hwMap) {
+        inTakeDriver = new RobotIntakeDriver(hwMap, 2000, telemetry);
+        Thread intakeDriverThread = new Thread(inTakeDriver);
+        intakeDriverThread.start();
+    }
+*/
     public void init(HardwareMap hwMap, Pose2d startPose, opModeCalled op) {
         PoseStorage.startPose = startPose;
         op_mode_called = op;
@@ -87,7 +97,7 @@ public class tataAutonomousBase extends LinearOpMode {
         robot = new tataMecanumDrive(hardwareMap);
 
         if (op_mode_called == opModeCalled.AUTO) {
-            openCVMainDriver = new OpenCVDetectorDriver(hardwareMap, 200, OpenCVDetectorDriver.RobotCamera.MAIN, SideColor.Red, telemetry);
+            openCVMainDriver = new OpenCVDetectorDriver(hardwareMap, 200, OpenCVDetectorDriver.RobotCamera.MAIN, currSide, telemetry);
             Thread openCVMainDriverThread = new Thread(openCVMainDriver);
             openCVMainDriverThread.start();
 
@@ -98,9 +108,10 @@ public class tataAutonomousBase extends LinearOpMode {
         }
 
 
-        sensorDriver = new RobotSensorDriver(hwMap, 100);
+        sensorDriver = new RobotSensorDriver(hwMap, 100, telemetry);
         Thread sensorDriverThread = new Thread(sensorDriver);
         sensorDriverThread.start();
+
 
         inTakeDriver = new RobotIntakeDriver(hwMap, 2000, telemetry);
         Thread intakeDriverThread = new Thread(inTakeDriver);
@@ -147,7 +158,7 @@ public class tataAutonomousBase extends LinearOpMode {
 
     public void moveSlideToPos(int lvl, SlideDirection slideDirection) {
         //0th element should be ignored as levels are 1, 2, 3
-        double slideDistanceInIncPerLevel[] = {0, 6.0, 8.5, 11.0};
+        double slideDistanceInIncPerLevel[] = {0, 6.0, 8.5, 12};
         double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.0};
 
         if (slideDirection == SlideDirection.OUT) {
@@ -328,9 +339,6 @@ public class tataAutonomousBase extends LinearOpMode {
 
     }
 
-    public void stopMainCamera() {
-        openCVMainDriver.stop();
-    }
 }
 
 

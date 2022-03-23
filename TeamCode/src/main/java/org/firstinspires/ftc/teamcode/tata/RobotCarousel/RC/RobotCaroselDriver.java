@@ -12,7 +12,7 @@ public class RobotCaroselDriver implements Runnable{
     private double delta_x   = 0.0;
     private boolean is_done  = true;
     private boolean carousel_on  = false;
-    private double motor_power = 0.95;
+    private double motor_power = 0.9;
     private double carousel_power = motor_power;
 
     //Thead run condition
@@ -30,7 +30,8 @@ public class RobotCaroselDriver implements Runnable{
         if (is_done == false) {
             is_done = true;
             if (carousel_on) {
-                hw.setPower(carousel_power);
+                //hw.setPower(carousel_power);
+                hw.rotateCarousel(5,carousel_power);
             } else {
                 hw.setPower(0.0);
             }

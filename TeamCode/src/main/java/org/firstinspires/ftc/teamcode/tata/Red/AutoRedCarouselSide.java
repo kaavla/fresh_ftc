@@ -84,7 +84,7 @@ public class AutoRedCarouselSide extends tataAutonomousBase {
 
         dsParams = sensorDriver.getRobotSensorParams();
 
-        RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF1);
+        RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF);
 
 
         TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()

@@ -74,7 +74,9 @@ public class IntakeCapstoneDetector extends OpenCvPipeline {
             telemetry.addData("Capstone Location", "FULL");
             Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
             Imgproc.rectangle(mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
-        }else if (white_capLeft ) {
+        }
+        /*
+        else if (white_capLeft ) {
             intake_status = IntakeStatus.FULL;
             telemetry.addData("Capstone Location", "FULL");
             Imgproc.cvtColor(white_mat, white_mat, Imgproc.COLOR_GRAY2RGB);
@@ -82,7 +84,7 @@ public class IntakeCapstoneDetector extends OpenCvPipeline {
             telemetry.update();
             return white_mat;
 
-        }
+        }*/
         else {
             intake_status = IntakeStatus.EMPTY;
             telemetry.addData("Capstone Location", "EMPTY");

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.tata.RobotSensors;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class RobotSensorDriver implements Runnable {
     private RobotSensorHW sensorHW = new RobotSensorHW();
 
@@ -17,8 +19,8 @@ public class RobotSensorDriver implements Runnable {
     //Sleep time interval (milliseconds) for the position update thread
     private int sleepTime;
 
-    public RobotSensorDriver(HardwareMap ahwMap, int threadSleepDelay) {
-        sensorHW.init(ahwMap);
+    public RobotSensorDriver(HardwareMap ahwMap, int threadSleepDelay, Telemetry t) {
+        sensorHW.init(ahwMap, t);
         sleepTime = threadSleepDelay;
     }
 
@@ -30,9 +32,9 @@ public class RobotSensorDriver implements Runnable {
         //check the left front sensors
         double detect_dist = 6.0;
 
-        if ((avg_rsp.x_LF < detect_dist) || (avg_rsp.x_LF1 < detect_dist)) {
+        if ((avg_rsp.x_LF < detect_dist) ) {
             barCodeLoc = 1;
-        } else if ((avg_rsp.x_RF < detect_dist) || (avg_rsp.x_RF1 < detect_dist)) {
+        } else if ((avg_rsp.x_RF < detect_dist)) {
             barCodeLoc = 2;
         } else {
             barCodeLoc = 3;
@@ -45,9 +47,9 @@ public class RobotSensorDriver implements Runnable {
         int barCodeLoc = 1;
         double detect_dist = 6.0;
         //check the left front sensors
-        if ((avg_rsp.x_RF < detect_dist) || (avg_rsp.x_RF1 < detect_dist)) {
+        if ((avg_rsp.x_RF < detect_dist) ) {
             barCodeLoc = 3;
-        } else if ((avg_rsp.x_LF < detect_dist) || (avg_rsp.x_LF1 < detect_dist)) {
+        } else if ((avg_rsp.x_LF < detect_dist)) {
             barCodeLoc = 2;
         } else {
             barCodeLoc = 1;
@@ -75,12 +77,11 @@ public class RobotSensorDriver implements Runnable {
 
     public RobotSensorParams getAvg(){
         RobotSensorParams avg = new RobotSensorParams();
+        /*
         avg.x_LF = 0;
         avg.x_RF = 0;
         avg.x_LR = 0;
         avg.x_RR = 0;
-        avg.x_LF1 = 0;
-        avg.x_RF1 = 0;
         avg.x_LS = 0;
         avg.x_RS = 0;
         for (int i = 0; i < MAX_FILTER_SIZE; i++) {
@@ -88,19 +89,19 @@ public class RobotSensorDriver implements Runnable {
             avg.x_RF += rspAray[i].x_RF;
             avg.x_LR += rspAray[i].x_LR;
             avg.x_RR += rspAray[i].x_RR;
-            avg.x_LF1 += rspAray[i].x_LF1;
-            avg.x_RF1 += rspAray[i].x_RF1;
             avg.x_LS += rspAray[i].x_LS;
             avg.x_RS += rspAray[i].x_RS;
         }
+
+         */
         avg.x_LF = rsp.x_LF/MAX_FILTER_SIZE;
         avg.x_RF = rsp.x_RF/MAX_FILTER_SIZE;
         avg.x_LR = rsp.x_LR/MAX_FILTER_SIZE;
         avg.x_RR = rsp.x_RR/MAX_FILTER_SIZE;
-        avg.x_LF1 = rsp.x_LF1/MAX_FILTER_SIZE;
-        avg.x_RF1 = rsp.x_RF1/MAX_FILTER_SIZE;
         avg.x_LS = rsp.x_LS/MAX_FILTER_SIZE;
         avg.x_RS = rsp.x_RS/MAX_FILTER_SIZE;
+        avg.c_LS = rsp.c_LS;
+        avg.c_RS = rsp.c_RS;
 
         return avg;
     }
