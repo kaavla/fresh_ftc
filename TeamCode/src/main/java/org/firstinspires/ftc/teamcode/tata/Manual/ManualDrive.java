@@ -114,7 +114,7 @@ public class ManualDrive extends tataAutonomousBase {
 
         //PoseStorage.startPose = startPose;
 
-        init(hardwareMap, PoseStorage.startPose);
+        init(hardwareMap, PoseStorage.startPose, opModeCalled.MANUAL);
         robot.setPoseEstimate( PoseStorage.currentPose);
 
         waitForStart();
@@ -150,7 +150,7 @@ public class ManualDrive extends tataAutonomousBase {
             slideDriver.checkGamePadX(gamepad1); //only to rotate the arm
 
             slideDriver.checkGamePad(gamepad2);
-            armDriver.checkGamePad(gamepad2);
+            //armDriver.checkGamePad(gamepad2);
             crDriver.checkGamePad(gamepad2);
             frDriver.checkGamePad(gamepad1);
 

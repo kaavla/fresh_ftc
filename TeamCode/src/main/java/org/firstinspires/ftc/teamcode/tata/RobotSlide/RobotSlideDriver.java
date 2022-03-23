@@ -29,12 +29,14 @@ public class RobotSlideDriver implements Runnable {
 
     public void dropGameElement() {
         double tilt_pos_delta = 0.2;
-        double tilt_arm_pos_delta = 0.3;
+        //double tilt_arm_pos_delta = 0.3;
+        double tilt_arm_pos_delta = 0.4;
         //Tilt box
         slideHW.setSlideServoCurrPos(0, -1 * tilt_pos_delta);
 
         try {
-            Thread.sleep(500);//was 50ms; we changed it because just 100 milliseconds IS TOO SLOW
+            //Thread.sleep(500);//was 50ms; we changed it because just 100 milliseconds IS TOO SLOW
+            Thread.sleep(200);//was 50ms; we changed it because just 100 milliseconds IS TOO SLOW
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -46,6 +48,7 @@ public class RobotSlideDriver implements Runnable {
 
         try {
             Thread.sleep(475);
+            //Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -75,10 +78,10 @@ public class RobotSlideDriver implements Runnable {
 
         if (gp.dpad_left) {
             slideHW.motorSetRawSpeed(1.0);
-            //moveRobotSlideBy(3,0);
+            //moveRobotSlideBy(20,0);
         } else if (gp.dpad_right) {
-            slideHW.motorSetRawSpeed(-1);
-            //moveRobotSlideBy(-3,0);
+            slideHW.motorSetRawSpeed(-0.8);
+            //moveRobotSlideBy(-20,0);
 
         } else if (gp.dpad_up) {
             dropGameElement();

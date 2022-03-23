@@ -25,11 +25,12 @@ public class RobotSideArmHW {
         SL.setDirection(Servo.Direction.REVERSE);
         //SR.setDirection(Servo.Direction.REVERSE);
         SL.setPosition(0.0);
+        /*
         try {
             Thread.sleep(400);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
         SR.setPosition(0.0);
 

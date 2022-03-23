@@ -9,5 +9,6 @@ public class RobotSensorParams {
     public double x_RS;
     public double x_LF1;
     public double x_RF1;
+    public RobotSensorHW.DetectedColors color;
 
 }

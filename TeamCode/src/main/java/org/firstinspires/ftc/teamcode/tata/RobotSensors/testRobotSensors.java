@@ -35,7 +35,15 @@ public class testRobotSensors extends LinearOpMode {
             telemetry.addData("RR:", "%2f inc ", params.x_RR);
             telemetry.addData("LS:", "%2f inc ", params.x_LS);
             telemetry.addData("RS:", "%2f inc ", params.x_RS);
-            telemetry.addData("Barcode = ", "%2d  ", barCodeLoc);
+            if (params.color == RobotSensorHW.DetectedColors.RED) {
+                telemetry.addData("RS:", "RED");
+            }
+            if (params.color == RobotSensorHW.DetectedColors.WHITE) {
+                telemetry.addData("RS:", "WHITE");
+            }
+            if (params.color == RobotSensorHW.DetectedColors.BLUE) {
+                telemetry.addData("RS:", "BLUE");
+            }
 
             telemetry.update();
             sleep(500);

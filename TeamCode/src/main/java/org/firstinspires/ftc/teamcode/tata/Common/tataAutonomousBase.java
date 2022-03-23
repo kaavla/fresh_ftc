@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.tata.OpenCVDetector.OpenCVDetectorDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotArm.RobotArmDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotCarousel.RC.RobotCaroselDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotFrontServo.RobotFrontServoDriver;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.tata.RobotIntake.RobotIntakeDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotLinearActuators.RobotLinearActuatorDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
+import org.firstinspires.ftc.teamcode.tata.RobotSideArm.RobotSideArmDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
@@ -35,13 +37,20 @@ public class tataAutonomousBase extends LinearOpMode {
         OUT
     }
 
+    public enum opModeCalled {
+        AUTO,
+        MANUAL
+    }
+
+
     public tataMecanumDrive robot;
     public RobotSensorDriver sensorDriver;
     public RobotSensorParams params;
 
     public RobotIntakeDriver inTakeDriver;
     public RobotSlideDriver slideDriver;
-    public RobotArmDriver armDriver;
+    //public RobotArmDriver armDriver;
+    public RobotSideArmDriver sideArmDriver;
     public RobotCaroselDriver crDriver;
     public RobotFrontServoDriver frDriver;
 
@@ -50,17 +59,24 @@ public class tataAutonomousBase extends LinearOpMode {
 
     public RobotImuDriver imuDriver;
     public RobotImuParams imuParams;
+
+    public OpenCVDetectorDriver openCVMainDriver;
+
     public SideColor currSide = SideColor.Blue;
 
     public ElapsedTime runtime = new ElapsedTime();
+    public int barCodeLoc = 1;
+    public RobotSensorParams dsParams = new RobotSensorParams();
+    public opModeCalled op_mode_called = opModeCalled.AUTO;
 
     @Override
     public void runOpMode() throws InterruptedException {
         //Empty Function
     }
 
-    public void init(HardwareMap hwMap, Pose2d startPose) {
+    public void init(HardwareMap hwMap, Pose2d startPose, opModeCalled op) {
         PoseStorage.startPose = startPose;
+        op_mode_called = op;
 
         if (startPose.getY() < 0) {
             currSide = SideColor.Red;
@@ -69,6 +85,18 @@ public class tataAutonomousBase extends LinearOpMode {
         }
 
         robot = new tataMecanumDrive(hardwareMap);
+
+        if (op_mode_called == opModeCalled.AUTO) {
+            openCVMainDriver = new OpenCVDetectorDriver(hardwareMap, 200, OpenCVDetectorDriver.RobotCamera.MAIN, SideColor.Red, telemetry);
+            Thread openCVMainDriverThread = new Thread(openCVMainDriver);
+            openCVMainDriverThread.start();
+
+            sideArmDriver = new RobotSideArmDriver(hwMap, 50);
+            Thread sideArmDriverThread = new Thread(sideArmDriver);
+            sideArmDriverThread.start();
+
+        }
+
 
         sensorDriver = new RobotSensorDriver(hwMap, 100);
         Thread sensorDriverThread = new Thread(sensorDriver);
@@ -82,9 +110,9 @@ public class tataAutonomousBase extends LinearOpMode {
         Thread slideDriverThread = new Thread(slideDriver);
         slideDriverThread.start();
 
-        armDriver = new RobotArmDriver(hwMap, 50);
-        Thread armDriverThread = new Thread(armDriver);
-        armDriverThread.start();
+        sideArmDriver = new RobotSideArmDriver(hwMap, 50);
+        Thread sideArmDriverThread = new Thread(sideArmDriver);
+        sideArmDriverThread.start();
 
         crDriver = new RobotCaroselDriver(hwMap, 200, currSide);
         Thread crDriverThread = new Thread(crDriver);
@@ -109,14 +137,18 @@ public class tataAutonomousBase extends LinearOpMode {
 
     }
 
+    public int getMarkerPos() {
+        return openCVMainDriver.getMarkerPos();
+
+    }
     public TrajectorySequenceBuilder getTrajectorySequenceBuilder() {
         return robot.trajectorySequenceBuilder(robot.getPoseEstimate());
     }
 
     public void moveSlideToPos(int lvl, SlideDirection slideDirection) {
         //0th element should be ignored as levels are 1, 2, 3
-        double slideDistanceInIncPerLevel[] = {0, 5.0, 9.5, 17.0};
-        double slideInclinePerLevel[]       = {0, 0.0, 0.1,  0.2};
+        double slideDistanceInIncPerLevel[] = {0, 6.0, 8.5, 11.0};
+        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.0};
 
         if (slideDirection == SlideDirection.OUT) {
             slideDriver.moveRobotSlideBy(slideDistanceInIncPerLevel[lvl], 0);
@@ -185,7 +217,7 @@ public class tataAutonomousBase extends LinearOpMode {
             RobotLog.ii("SHANK", "Red RS =  %2f", T);
         }
 
-        return (T - 1);
+        return (T);
     }
 
 
@@ -281,16 +313,23 @@ public class tataAutonomousBase extends LinearOpMode {
 
 
     public void stopThreads() {
+    if (op_mode_called == opModeCalled.AUTO) {
+        openCVMainDriver.stop();
+        sideArmDriver.stop();
+    }
         sensorDriver.stop();
         inTakeDriver.stop();
         slideDriver.stop();
-        armDriver.stop();
         crDriver.stop();
         frDriver.stop();
         imuDriver.stop();
         driver0.stop();
         driver1.stop();
 
+    }
+
+    public void stopMainCamera() {
+        openCVMainDriver.stop();
     }
 }
 

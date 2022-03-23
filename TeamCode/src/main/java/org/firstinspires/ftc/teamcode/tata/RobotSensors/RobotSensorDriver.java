@@ -23,6 +23,7 @@ public class RobotSensorDriver implements Runnable {
     }
 
     public int getBarCodeRED() {
+        //Deprecated
         RobotSensorParams avg_rsp = getAvg();
 
         int barCodeLoc = 1;
@@ -39,6 +40,7 @@ public class RobotSensorDriver implements Runnable {
         return barCodeLoc;
     }
     public int getBarCodeBLUE() {
+        //Deprecated
         RobotSensorParams avg_rsp = getAvg();
         int barCodeLoc = 1;
         double detect_dist = 6.0;
@@ -65,17 +67,6 @@ public class RobotSensorDriver implements Runnable {
 
     public void addToFilter(RobotSensorParams in) {
         rspAray[arrIdx] = in;
-        /*
-        rspAray[arrIdx].x_LF = in.x_LF;
-        rspAray[arrIdx].x_RF = in.x_RF;
-        rspAray[arrIdx].x_LR = in.x_LR;
-        rspAray[arrIdx].x_RR = in.x_RR;
-        rspAray[arrIdx].x_LF1 = in.x_LF1;
-        rspAray[arrIdx].x_RF1 = in.x_RF1;
-        rspAray[arrIdx].x_LS = in.x_LS;
-        rspAray[arrIdx].x_RS = in.x_RS;
-         */
-
         arrIdx = arrIdx + 1;
         if (arrIdx >= MAX_FILTER_SIZE) {
             arrIdx = 0;

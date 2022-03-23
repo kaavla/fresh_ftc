@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.tata.Blue;
+package org.firstinspires.ftc.teamcode.tata.Red;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
@@ -12,23 +11,27 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
+import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
+import org.firstinspires.ftc.teamcode.tata.RobotSideArm.RobotSideArmDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.Arrays;
 
-@Autonomous(name = "Blue - Auto - Warehouse - Manav", group = "BLUE")
-public class AutoBlueWarehouseManav extends tataAutonomousBase {
+@Autonomous(name = "RED - Auto - Carousel Side", group = "RED")
+public class AutoRedCarouselSide extends tataAutonomousBase {
 
-    public Pose2d startPose = new Pose2d( 6.75, 60.5, Math.toRadians( 90 ) );
+    public Pose2d startPose = new Pose2d( -40.75, -63.5, Math.toRadians( 270 ));
 
+    //public Pose2d dropPose1 = new Pose2d( -30.9, -34.75, Math.toRadians( 180+30 ));
+    //public Pose2d dropPose2 = new Pose2d( -33.5, -36.25, Math.toRadians( 180+30 ));
+    //public Pose2d dropPose3 = new Pose2d( -37.85,-38.75, Math.toRadians( 180+30 ));
 
     //Optimal pos for dropping in Levels 1, 2 or 3
     public Pose2d dropPose[] = {new Pose2d(),                            //Not Used
-            new Pose2d( 55.9, -34.75, Math.toRadians(20.32 )),  //level 1
-            new Pose2d( 57, 23, Math.toRadians( 67.5 )),  //level 2
-            new Pose2d( 59,27.7, Math.toRadians( 67.5 ))}; //level 3
+            new Pose2d( -30.9, -34.75, Math.toRadians( 180+30 )),  //level 1
+            new Pose2d( -33.5, -36.25, Math.toRadians( 180+30 )),  //level 2
+            new Pose2d( -37.85,-38.75, Math.toRadians( 180+30 ))}; //level 3
 
-    private double wallPos = 63;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -70,9 +73,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     moveSlideToPos(barCodeLoc, SlideDirection.IN);
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
-                .setTangent( Math.toRadians( 75) )
-                .splineToSplineHeading( new Pose2d( 14, wallPos , Math.toRadians( 0 ) ), Math.toRadians( 0))
-                .lineToConstantHeading( new Vector2d( 42, 63 ) )
+                .lineToLinearHeading(new Pose2d(-58, -60, Math.toRadians(270)))
                 .build();
         robot.followTrajectorySequence(moveToDropGE);
         PoseStorage.currentPose = robot.getPoseEstimate();
@@ -86,10 +87,33 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
         RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF1);
 
 
+        TrajectorySequence moveToStartCarousel = getTrajectorySequenceBuilder()
+                .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )
+                .strafeRight(Math.min(dsParams.x_RS - 7, 6))
+                .waitSeconds(0.2)
+                .forward(Math.min(dsParams.x_LF - 8, 12))  //Carousel if of radius 7.5 inch //was using LF
+                .addTemporalMarker(() -> {
+                    //start Carosel motor
+                    crDriver.toggleCarousel(true);
+                })
+                .waitSeconds(4)
+                .addTemporalMarker(() -> {
+                    //stop Carosel motor
+                    crDriver.toggleCarousel(false);
+                })
+                .strafeLeft(8)
+                .strafeRight(4)
+                .addTemporalMarker(() -> {
+                    inTakeDriver.intakeSet(true, true);
+                })
+                .build();
+
+        robot.followTrajectorySequence(moveToStartCarousel);
+        PoseStorage.currentPose = robot.getPoseEstimate();
 
         //Check if duck has been collected
         TrajectorySequence collectDuck = getTrajectorySequenceBuilder()
-                .forward(1)
+                .strafeLeft(1)
                 .build();
 
         ElapsedTime stopTimer = new ElapsedTime();
@@ -112,19 +136,18 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .addTemporalMarker(() -> {
                     moveSlideToPos(1, SlideDirection.OUT);
                 })
-                .setTangent(Math.toRadians(180 ))
-                .lineToConstantHeading( new Vector2d( 14, 63 ) )
-                .splineToLinearHeading(dropPose[1], Math.toRadians(180+67.5))
-
+                .lineToSplineHeading(dropPose[1])
                 .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
                     slideDriver.dropGameElement();
                 })
                 .waitSeconds(0.1)
+
                 .addTemporalMarker(() -> {
                     moveSlideToPos(barCodeLoc, SlideDirection.IN);
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
+                .lineToLinearHeading(new Pose2d(-65, -35, Math.toRadians(270)))
                 .build();
         robot.followTrajectorySequence(moveToDropDuck);
 

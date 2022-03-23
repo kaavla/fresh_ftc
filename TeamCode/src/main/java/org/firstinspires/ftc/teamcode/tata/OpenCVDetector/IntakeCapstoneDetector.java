@@ -12,6 +12,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class IntakeCapstoneDetector extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
+    Mat white_mat = new Mat();
+
     public enum IntakeStatus {
         EMPTY,
         FULL
@@ -30,6 +32,7 @@ public class IntakeCapstoneDetector extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, white_mat, Imgproc.COLOR_RGB2HSV);
 
         Scalar lowHSV = new Scalar(15, 30, 50);
         Scalar highHSV = new Scalar(42, 255, 255);
@@ -47,27 +50,46 @@ public class IntakeCapstoneDetector extends OpenCvPipeline {
 
         left.release();
 
+        Scalar white_lowHSV = new Scalar(0, 0, 168);
+        Scalar white_highHSV = new Scalar(172, 111, 255);
+
+        Core.inRange(white_mat, white_lowHSV, white_highHSV, white_mat);
+
+        Mat white_left = white_mat.submat(CAP_ROI);
+        double white_leftValue = Core.sumElems(white_left).val[0] / CAP_ROI.area() / 255;
+        white_left.release();
+
         telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
         telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
+        telemetry.addData("White Left raw value", (int) Core.sumElems(white_left).val[0]);
+        telemetry.addData("White Left percentage", Math.round(white_leftValue * 100) + "%");
 
         boolean capLeft = leftValue > PERCENT_COLOR_THRESHOLD;
+        boolean white_capLeft = white_leftValue > PERCENT_COLOR_THRESHOLD;
+        Scalar colorNotCap = new Scalar(255, 0, 0);
+        Scalar colorCap = new Scalar(0, 255, 0);
 
-        if (capLeft) {
+        if (capLeft ) {
             intake_status = IntakeStatus.FULL;
             telemetry.addData("Capstone Location", "FULL");
+            Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
+            Imgproc.rectangle(mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
+        }else if (white_capLeft ) {
+            intake_status = IntakeStatus.FULL;
+            telemetry.addData("Capstone Location", "FULL");
+            Imgproc.cvtColor(white_mat, white_mat, Imgproc.COLOR_GRAY2RGB);
+            Imgproc.rectangle(white_mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
+            telemetry.update();
+            return white_mat;
+
         }
         else {
             intake_status = IntakeStatus.EMPTY;
             telemetry.addData("Capstone Location", "EMPTY");
+            Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
+            Imgproc.rectangle(mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
         }
         telemetry.update();
-
-        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
-
-        Scalar colorNotCap = new Scalar(255, 0, 0);
-        Scalar colorCap = new Scalar(0, 255, 0);
-
-        Imgproc.rectangle(mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
 
         return mat;
     }

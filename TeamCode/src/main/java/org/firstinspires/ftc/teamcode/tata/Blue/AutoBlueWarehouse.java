@@ -31,7 +31,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        init(hardwareMap, startPose);
+        init(hardwareMap, startPose, opModeCalled.AUTO);
         robot.setPoseEstimate(startPose);
 
         int barCodeLoc = 3;

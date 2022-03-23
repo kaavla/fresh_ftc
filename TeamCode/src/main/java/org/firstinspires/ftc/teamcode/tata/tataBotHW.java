@@ -26,7 +26,7 @@ public class tataBotHW {
     public RobotSensorDriver sensorDriver;
     public RobotIntakeDriver inTakeDriver;
     public RobotSlideDriver  slideDriver;
-    public RobotArmDriver    armDriver;
+    //public RobotArmDriver    armDriver;
     public RobotCaroselDriver crDriver;
     public RobotFrontServoDriver frDriver;
 
@@ -51,9 +51,9 @@ public class tataBotHW {
         Thread slideDriverThread = new Thread(slideDriver);
         slideDriverThread.start();
 
-        armDriver    = new RobotArmDriver(hwMap, 50);
-        Thread armDriverThread = new Thread(armDriver);
-        armDriverThread.start();
+        //armDriver    = new RobotArmDriver(hwMap, 50);
+        //Thread armDriverThread = new Thread(armDriver);
+        //armDriverThread.start();
 
         crDriver     = new RobotCaroselDriver(hwMap, 200, tataAutonomousBase.SideColor.Blue);
         Thread crDriverThread = new Thread(crDriver);
@@ -69,7 +69,7 @@ public class tataBotHW {
         sensorDriver.stop();
         inTakeDriver.stop();
         slideDriver.stop();
-        armDriver.stop();
+        //armDriver.stop();
         crDriver.stop();
         frDriver.stop();
     }

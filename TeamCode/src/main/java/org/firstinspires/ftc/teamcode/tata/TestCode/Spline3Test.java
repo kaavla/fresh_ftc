@@ -16,7 +16,7 @@ public class Spline3Test extends tataAutonomousBase {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        init(hardwareMap, startPose);
+        init(hardwareMap, startPose, opModeCalled.AUTO);
 
         waitForStart();
 

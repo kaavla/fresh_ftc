@@ -14,7 +14,7 @@ public class storagebluepark extends tataAutonomousBase {
     public void runOpMode() throws InterruptedException {
 
         Trajectory traj0;
-        init(hardwareMap, startPose);
+        init(hardwareMap, startPose, opModeCalled.AUTO);
         robot.setPoseEstimate(startPose);
 
         waitForStart();

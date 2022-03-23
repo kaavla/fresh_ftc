@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.tata.RobotSlide;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,8 +11,8 @@ import com.qualcomm.robotcore.util.RobotLog;
 public class RobotSlideHW {
 
     // motors that push the slide
-    public DcMotor SL1 = null;
-    public DcMotor SL2 = null;
+    public DcMotorEx SL1 = null;
+    public DcMotorEx SL2 = null;
 
     //Servos
     private Servo SLS0L = null; //Left servo to tilt the box
@@ -34,7 +35,7 @@ public class RobotSlideHW {
     private static final double TICK_COUNTS_PER_INCH = (13.7 * 28) / (1 * 3.1415);
     private static final double MOTOR_SPEED = 0.5;
 
-    private static final double MAX_SLIDE_POS_INCH = 22;
+    private static final double MAX_SLIDE_POS_INCH = 100;
     private static final double MIN_SLIDE_POS_INCH = 0;
 
     private double curr_slide_arm_in_inch = 0.0;
@@ -49,8 +50,8 @@ public class RobotSlideHW {
     public void init(HardwareMap ahwMap) {
         RobotLog.ii("SL124", "Enter - init");
 
-        SL1 = ahwMap.get(DcMotor.class, "SL1");
-        SL2 = ahwMap.get(DcMotor.class, "SL2");
+        SL1 = ahwMap.get(DcMotorEx.class, "SL1");
+        SL2 = ahwMap.get(DcMotorEx.class, "SL2");
 
         //reverse direction for one of the slide drive motors?
         SL1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -202,7 +203,7 @@ public class RobotSlideHW {
     }
 
     public void moveSlideTo(double deltaInch) {
-        RobotLog.ii("SL124", "moveSlideTo - Enter %2f", deltaInch);
+        RobotLog.ii("SL124", "moveSlideTo - Enter %2f, %d", deltaInch, SL1.getCurrentPosition());
         int newPos = 0;
 
         SL1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -239,8 +240,17 @@ public class RobotSlideHW {
         SL1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SL2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        SL1.setPower(Math.abs(MOTOR_SPEED));
-        SL2.setPower(Math.abs(MOTOR_SPEED));
+        if (deltaInch > 0) {
+            //SL1.setPower(Math.abs(1.0));
+            //SL2.setPower(Math.abs(1.0));
+            SL1.setVelocity(3000);
+            SL2.setVelocity(3000);
+        }else{
+            //SL1.setPower(Math.abs(0.3));
+            //SL2.setPower(Math.abs(0.3));
+            SL1.setVelocity(1500);
+            SL2.setVelocity(1500);
+        }
 
         curr_slide_arm_in_inch = curr_slide_arm_in_inch + deltaInch;
         RobotLog.ii("SL124", "Motors run to positoin %2d", newPos);

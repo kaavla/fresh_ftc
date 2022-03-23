@@ -16,7 +16,7 @@ public class warehousebluepark extends tataAutonomousBase {
     public void runOpMode() throws InterruptedException {
 
         Trajectory traj0, traj1, traj2, traj3, traj4;
-        init(hardwareMap, startPose);
+        init(hardwareMap, startPose, opModeCalled.AUTO);
         robot.setPoseEstimate(startPose);
 
         waitForStart();

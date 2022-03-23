@@ -16,7 +16,8 @@ public class ShankRed1 implements MeepMeepPath{
 
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
-		return drive.trajectorySequenceBuilder( new Pose2d( -42.25, -63.5, Math.toRadians( 90 ) ) )
+		return drive.trajectorySequenceBuilder( new Pose2d( -40.75, -63.5, Math.toRadians( 270 ) ) )
+				.waitSeconds(3)
 				.addTemporalMarker( ( ) -> {
 					//Robot Arm to Capture Pos
 				} )
@@ -25,39 +26,34 @@ public class ShankRed1 implements MeepMeepPath{
 				//Pos 2
 				//.lineToSplineHeading(new Pose2d(-36, -47.5, Math.toRadians(90)))
 				//Pos 3
-				.lineToSplineHeading(new Pose2d(-27, -47.5, Math.toRadians(90)))
+				//.setTangent( Math.toRadians( 67.5 ) )
+				//.splineToSplineHeading( new Pose2d( -21, -46 , Math.toRadians( 180 + 67.5 ) ), Math.toRadians( 67.5))
+				.lineToSplineHeading(new Pose2d( -32.6, -35.75 , Math.toRadians( 180 + 30 )))
+
 				.addTemporalMarker( ( ) -> {
 					//Extend Robot Slides to right Height
 				} )
 
-				.forward(3)
-				.addTemporalMarker( ( ) -> {
-					//Robot Arm to Save Pos
-				} )
-				.lineToSplineHeading(new Pose2d(-44, -24, Math.toRadians(180)))
-				.back(10)
-				.addTemporalMarker( ( ) -> {
-					//Drop Element
-				} )
-				.waitSeconds( 2 )
 				.addTemporalMarker( ( ) -> {
 					//Draw Sides in
 				} )
 
-				.lineToLinearHeading(new Pose2d(-60, -45, Math.toRadians(270)))
+				.lineToLinearHeading(new Pose2d(-58, -60, Math.toRadians(270)))
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.waitSeconds( 1)
 				.strafeRight(5)
-				.waitSeconds( 1)
-				.forward(10)
+				//.waitSeconds( 1)
+				//.forward(10)
 				.addTemporalMarker( ( ) -> {
                   //start Carousel
 				} )
-				.waitSeconds( 4)
-				.lineToLinearHeading(new Pose2d(-65, -40, Math.toRadians(270)))
+				.lineToSplineHeading(new Pose2d( -32.6, -35.75 , Math.toRadians( 180 + 30 )))
+
+
+				.lineToLinearHeading(new Pose2d(-65, -35, Math.toRadians(270)))
 
 
 				.build( );

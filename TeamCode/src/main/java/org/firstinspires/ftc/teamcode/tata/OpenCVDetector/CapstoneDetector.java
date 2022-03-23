@@ -75,28 +75,28 @@ public class CapstoneDetector extends OpenCvPipeline {
 
         left.release();
         right.release();
-
+/*
         telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
         telemetry.addData("Right raw value", (int) Core.sumElems(right).val[0]);
         telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
         telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
-
+*/
         boolean capLeft = leftValue > PERCENT_COLOR_THRESHOLD;
         boolean capRight = rightValue > PERCENT_COLOR_THRESHOLD;
 
         if (capLeft) {
             location = Location.pos1;
-            telemetry.addData("Capstone Location", "pos1");
+            //telemetry.addData("Capstone Location", "pos1");
         }
         else if (capRight) {
             location = Location.pos2;
-            telemetry.addData("Capstone Location", "pos2");
+            //telemetry.addData("Capstone Location", "pos2");
         }
         else {
             location = Location.pos3;
-            telemetry.addData("Capstone Location", "pos3");
+            //telemetry.addData("Capstone Location", "pos3");
         }
-        telemetry.update();
+        //telemetry.update();
 
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 

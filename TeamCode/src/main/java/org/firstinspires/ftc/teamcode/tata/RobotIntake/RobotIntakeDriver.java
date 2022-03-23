@@ -52,10 +52,17 @@ public class RobotIntakeDriver implements Runnable{
             if (cameraHw.getLocation() == 1){
                 //Game element has been collected
                 //Automatically reverse the intake
-                hw.setPower(0.0);
+                hw.setPower(-1*0.5);
+
             }
 
         }
+    }
+    public boolean isElementCollected() {
+        if (cameraHw.getLocation() == 1) {
+            return true;
+        }
+        return false;
     }
 
     public RobotIntakeParams getRobotIntakeParams(){

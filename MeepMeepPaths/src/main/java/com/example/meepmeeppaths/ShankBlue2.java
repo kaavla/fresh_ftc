@@ -10,113 +10,73 @@ import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
 
 import java.util.Arrays;
 
+//WareHouse Path
 public class ShankBlue2 implements MeepMeepPath{
 
 	double wallPos = 63;
+	Pose2d dropPos =new Pose2d( -0.4,51.5 , Math.toRadians(67.5));
 
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
-		return drive.trajectorySequenceBuilder( new Pose2d( 0, 61, Math.toRadians( 270 ) ) )
-				.forward(6)
+		return drive.trajectorySequenceBuilder( new Pose2d( 6.75, 61, Math.toRadians( 90 ) ) )
+				.setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(40 ), new MecanumVelocityConstraint( 60,14.1) ) ) )
+
+				.addTemporalMarker(() -> {
+					//moveSlideToPos(lvl, SlideDirection.OUT);
+				})
+				.setTangent(Math.toRadians(180 + 67.5))
+				.splineToLinearHeading(dropPos, Math.toRadians(180+ 67.5))
+				.back(12)
+				.waitSeconds(0.5)
 				.addTemporalMarker( ( ) -> {
-                    //robot.liftToShippingHubHeight( height );
+					//slideDriver.dropGameElement();
 				} )
-				.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+				.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200 );
+					//moveSlideToPos(lvl, SlideDirection.IN);
 				} )
 
-				.waitSeconds( 0.8 )
-
-				// move to grab block 1
-				.setTangent( Math.toRadians( 90 ) )
-				//.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
+				//Go to Collect 1st Element
+				.setTangent( Math.toRadians( 75) )
+				.splineToSplineHeading( new Pose2d( 14, wallPos , Math.toRadians( 0 ) ), Math.toRadians( 0))
+				.lineToConstantHeading( new Vector2d( 42, 63 ) )
 				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0.6 );
+					//inTakeDriver.intakeSet(true, true);
 				} )
-				.lineToConstantHeading( new Vector2d( 48, wallPos ) ) // 48
-				.lineToConstantHeading( new Vector2d( 12, wallPos ) )
 				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0 );
+					//inTakeDriver.intakeSet(true, false);
 				} )
 
-				// move to dump block 1 in the top layer
 				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+					//stop intake
+					//inTakeDriver.intakeSet(false, false);
 				} )
-				//.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
-				//.lineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ) )
-				.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+				.waitSeconds(0.2)
 				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200 );
-				} )
-				.waitSeconds( 0.8 )
+					//custommoveSlideToPos(lvl, SlideDirection.OUT, 5.0, 0.0);
+					//moveSlideToPos(1, SlideDirection.OUT);
 
-				// move to grab block 2
-				.setTangent( Math.toRadians( 90 ) )
-				//.splineToSplineHeading( new Pose2d( 18/*49*/, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToSplineHeading( new Pose2d( 12/*49*/, wallPos, Math.toRadians( 0 ) ))
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0.6 );
-				} )
-				.lineToConstantHeading( new Vector2d( 50, wallPos ) ) // 53
-				.lineToConstantHeading( new Vector2d( 12, wallPos ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0 );
 				} )
 
-				// move to dump block 2 in the top layer
+				.setTangent(Math.toRadians(180 ))
+				.lineToConstantHeading( new Vector2d( 14, 63 ) )
+				.splineToLinearHeading(new Pose2d( -2.22, 42, Math.toRadians( 67.5 )), Math.toRadians(180+67.5))
+				//.splineToLinearHeading(new Pose2d( 2.4, 51.5, Math.toRadians( 67.5 )), Math.toRadians(180+67.5))
+				//.back(14)
+				//.waitSeconds(0.5)
 				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+					//slideDriver.dropGameElement();
 				} )
-				//.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
-				//.lineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ))
-				.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
+				//.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200 );
-				} )
-				.waitSeconds( 0.8 )
-
-				// move to grab block 3
-				.setTangent( Math.toRadians( 90 ) )
-				//.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ))
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0.6 );
-				} )
-				.lineToConstantHeading( new Vector2d( 52, wallPos ) ) // 50
-				.lineToConstantHeading( new Vector2d( 12, wallPos ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0 );
+					//moveSlideToPos(1, SlideDirection.IN);
 				} )
 
-				// move to dump block 3 in the top layer
-				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-				} )
-				//.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
-				//.lineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ))
-				.lineToSplineHeading( new Pose2d(0, 42, Math.toRadians(67.5)) )
-				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200 );
-				} )
-				.addTemporalMarker( ( ) -> {
-//					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-//					robot.odometryLift.liftOdometry( );
-				} )
-				.waitSeconds( 0.8 )
+				//Go to Collect 1st Element
+				.setTangent( Math.toRadians( 75) )
+				.splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 0) )
 
-				// turn towards the
-				.turn( Math.toRadians( 110 ) )
-				/*// move to barrier to park
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 11.5, 44, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToConstantHeading( new Vector2d( 62, 44 ) )*/
+
 				.build( );
 
 

@@ -26,8 +26,16 @@ public class testRobotSlide extends LinearOpMode {
         double posIncr = 0.05;
         double newPos = 0.5;
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            slideDriver.checkGamePad(gamepad2);
+        //while (opModeIsActive()) {
+            //slideDriver.checkGamePad(gamepad2);
+            slideDriver.moveRobotSlideBy(6,0);
+            sleep(700);
+            slideDriver.dropGameElement();
+            sleep(2000);
+
+        slideDriver.moveRobotSlideBy(-6,0);
+            sleep(2000);
+
 
             params = slideDriver.getRobotSlideParams();
             telemetry.addData("Arm:", "%2f inc ", params.pos);
@@ -41,7 +49,7 @@ public class testRobotSlide extends LinearOpMode {
             telemetry.update();
             sleep(50);
             idle();
-        }
+        //}
         slideDriver.stop();
     }
 }

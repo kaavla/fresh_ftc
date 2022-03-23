@@ -26,7 +26,7 @@ public class tataBotManual extends tataBotCommon {
             robot.slideDriver.checkGamePad(gamepad2);
             robot.slideDriver.checkGamePadX(gamepad1); //only to rotate the arm
 
-            robot.armDriver.checkGamePad(gamepad2);
+            //robot.armDriver.checkGamePad(gamepad2);
             robot.crDriver.checkGamePad(gamepad2);
             robot.frDriver.checkGamePad(gamepad1);
 
