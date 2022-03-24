@@ -15,7 +15,7 @@ public class testOpenCVDetector extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        driver = new OpenCVDetectorDriver(hardwareMap, 200, OpenCVDetectorDriver.RobotCamera.MAIN, tataAutonomousBase.SideColor.Blue, telemetry);
+        driver = new OpenCVDetectorDriver(hardwareMap, 200, OpenCVDetectorDriver.RobotCamera.MAIN, tataAutonomousBase.SideColor.Red, telemetry);
         //driver = new OpenCVDetectorDriver(hardwareMap, 200, OpenCVDetectorDriver.RobotCamera.MAIN, tataAutonomousBase.SideColor.Red, telemetry);
         Thread driverThread = new Thread(driver);
         driverThread.start();
