@@ -19,14 +19,17 @@ import java.util.Arrays;
 @Autonomous(name = "Blue - Auto - Warehouse - Manav", group = "BLUE")
 public class AutoBlueWarehouseManav extends tataAutonomousBase {
 
-    public Pose2d startPose = new Pose2d( 6.75, 60.5, Math.toRadians( 90 ) );
+    public Pose2d startPose = new Pose2d(6.75, 60.5, Math.toRadians(90));
 
 
     //Optimal pos for dropping in Levels 1, 2 or 3
-    public Pose2d dropPose[] = {new Pose2d(),                            //Not Used
-            new Pose2d(    -3.5 , 44.07, Math.toRadians( 67.5 )),  //level 1
-            new Pose2d( -2.3, 46.8, Math.toRadians( 67.5 )),  //level 2
-            new Pose2d( -1.9,46.8, Math.toRadians( 67.5 ))}; //level 3
+    public Pose2d dropPose[] = {
+            new Pose2d(),                            //Not Used
+            new Pose2d(-3.5, 43.5, Math.toRadians(67.5)),  //level 1
+            new Pose2d(-2.3, 46.8, Math.toRadians(67.5)),  //level 2
+            new Pose2d(-1.9, 46.8, Math.toRadians(67.5)),
+            new Pose2d(-1.9, 46.8, Math.toRadians(62.5)),
+            new Pose2d(-1.9, 46.8, Math.toRadians(57.5))}; //level 3
 
     private double wallPos = 63;
 
@@ -37,9 +40,10 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
         robot.setPoseEstimate(startPose);
 
         while (!isStopRequested() && !isStarted()) {
-           barCodeLoc = getMarkerPos();
-           telemetry.addData("Waiting to Start. Element position", barCodeLoc);
-           telemetry.update();
+            barCodeLoc = getMarkerPos();
+
+            telemetry.addData("Waiting to Start. Element position", barCodeLoc);
+            telemetry.update();
         }
 
         waitForStart();
@@ -54,11 +58,13 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
             stopThreads();
             return;
         }
+        barCodeLoc = 3;
 
         TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
                     moveSlideToPos(barCodeLoc, SlideDirection.OUT);
                 })
+                .waitSeconds(0.4)
                 .lineToSplineHeading(dropPose[barCodeLoc])
                 .waitSeconds(0.4)
                 .addTemporalMarker(() -> {
@@ -70,9 +76,9 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     moveSlideToPos(barCodeLoc, SlideDirection.IN);
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
-                .setTangent( Math.toRadians( 75) )
-                .splineToSplineHeading( new Pose2d( 14, wallPos , Math.toRadians( 0 ) ), Math.toRadians( 0))
-                .lineToConstantHeading( new Vector2d( 42, 63 ) )
+                .setTangent(Math.toRadians(35))
+                .splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(42, 63))
                 .addTemporalMarker(() -> {
                     inTakeDriver.intakeSet(true, true);
                 })
@@ -90,15 +96,13 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
         RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF);
 
 
-
         //Check if duck has been collected
         TrajectorySequence collectDuck = getTrajectorySequenceBuilder()
-                .forward(8)
+                .forward(7)
                 .build();
 
         ElapsedTime stopTimer = new ElapsedTime();
-        while(opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < 2))
-        {
+        while (opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < 3)) {
             if (inTakeDriver.isElementCollected()) {
                 //Game Elemented is collected
                 break;
@@ -108,18 +112,20 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
             PoseStorage.currentPose = robot.getPoseEstimate();
         }
         //Drop Duck
+        dsParams = sensorDriver.getRobotSensorParams();
         TrajectorySequence moveToDropDuck = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
-                    inTakeDriver.intakeSet(false, true);
+                    inTakeDriver.intakeSet(false, false);
                 })
-                .back(10)
-                .strafeLeft(3)
+                //.back(10)
+                //.strafeLeft(3)
+                .setTangent(Math.toRadians(180))
+
                 .addTemporalMarker(() -> {
                     moveSlideToPos(3, SlideDirection.OUT);
                 })
-                .setTangent(Math.toRadians(180))
-                .lineToConstantHeading( new Vector2d( 14, 63 ) )
-                .splineToLinearHeading(dropPose[3], Math.toRadians(180+67.5))
+                .lineToConstantHeading(new Vector2d(14, 63 + Math.min(dsParams.x_LF, 3)))
+                .splineToLinearHeading(dropPose[4], Math.toRadians(180 + 65))
 
                 .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
@@ -130,9 +136,9 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     moveSlideToPos(3, SlideDirection.IN);
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
-                .setTangent( Math.toRadians( 75) )
-                .splineToSplineHeading( new Pose2d( 14, wallPos , Math.toRadians( 0 ) ), Math.toRadians( 0))
-                .lineToConstantHeading( new Vector2d( 42, 63 ) )
+                .setTangent(Math.toRadians(40))
+                .splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(42, 63))
                 .addTemporalMarker(() -> {
                     inTakeDriver.intakeSet(true, true);
                 })
@@ -144,8 +150,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .build();
 
         ElapsedTime stopTimer1 = new ElapsedTime();
-        while(opModeIsActive() && !isStopRequested() && (stopTimer1.seconds() < 2))
-        {
+        while (opModeIsActive() && !isStopRequested() && (stopTimer1.seconds() < 2)) {
             if (inTakeDriver.isElementCollected()) {
                 //Game Elemented is collected
                 break;
@@ -158,14 +163,12 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .addTemporalMarker(() -> {
                     inTakeDriver.intakeSet(false, true);
                 })
-                .back(10)
-                .strafeLeft(3)
                 .addTemporalMarker(() -> {
                     moveSlideToPos(3, SlideDirection.OUT);
                 })
                 .setTangent(Math.toRadians(180))
-                .lineToConstantHeading( new Vector2d( 14, 63 ) )
-                .splineToLinearHeading(dropPose[3], Math.toRadians(180+67.5))
+                .lineToConstantHeading(new Vector2d(14, 63 + Math.min(dsParams.x_LF, 3)))
+                .splineToLinearHeading(dropPose[5], Math.toRadians(180 + 62.5))
 
                 .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
@@ -177,11 +180,37 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
                 .build();
-                robot.followTrajectorySequence(moveToDropDuck1);
-        sleep(200);
+        robot.followTrajectorySequence(moveToDropDuck1);
+        sleep(1000);
+
+        TrajectorySequence moveToPark = getTrajectorySequenceBuilder()
+                .setTangent(Math.toRadians(35))
+                .splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(42, 63))
+                .addTemporalMarker(() -> {
+                    inTakeDriver.intakeSet(true, true);
+                })
+
+                .build();
+
+        robot.followTrajectorySequence(moveToPark);
+
+        TrajectorySequence getDuck = getTrajectorySequenceBuilder()
+                .forward(9)
+                .build();
+
+        ElapsedTime stopTime = new ElapsedTime();
+        while (opModeIsActive() && !isStopRequested() && (stopTime.seconds() < 3)) {
+            if (inTakeDriver.isElementCollected()) {
+                //Game Elemented is collected
+                break;
+            }
+
+            robot.followTrajectorySequence(getDuck);
 
 
-        stopThreads();
+            stopThreads();
 
+        }
     }
 }

@@ -155,11 +155,20 @@ public class tataAutonomousBase extends LinearOpMode {
     public TrajectorySequenceBuilder getTrajectorySequenceBuilder() {
         return robot.trajectorySequenceBuilder(robot.getPoseEstimate());
     }
-
+    public void lrMove(int lvl, boolean drop){
+        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.1};
+        if (drop) {
+            driver0.pullLinearActuatorBy(-1 * slideInclinePerLevel[lvl]); //Pull up
+            driver1.pullLinearActuatorBy(-1 * slideInclinePerLevel[lvl]);
+        }else{
+            driver0.pullLinearActuatorBy(slideInclinePerLevel[lvl]); //pull down
+            driver1.pullLinearActuatorBy(slideInclinePerLevel[lvl]); //pull down
+        }
+    }
     public void moveSlideToPos(int lvl, SlideDirection slideDirection) {
         //0th element should be ignored as levels are 1, 2, 3
         double slideDistanceInIncPerLevel[] = {0, 6.0, 8.5, 12};
-        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.0};
+        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.05};
 
         if (slideDirection == SlideDirection.OUT) {
             slideDriver.moveRobotSlideBy(slideDistanceInIncPerLevel[lvl], 0);
@@ -172,19 +181,14 @@ public class tataAutonomousBase extends LinearOpMode {
             slideDriver.moveRobotSlideBy(-1 * slideDistanceInIncPerLevel[lvl], 0);
         }
     }
-    public void custommoveSlideToPos(int lvl, SlideDirection slideDirection, double slideDistance, double slideIncline) {
+    public void custommoveSlideToPos(SlideDirection slideDirection, double slideDistance) {
         //0th element should be ignored as levels are 1, 2, 3
         double slideDistanceInIncPerLevel = slideDistance;
-        double slideInclinePerLevel       = slideIncline;
 
         if (slideDirection == SlideDirection.OUT) {
             slideDriver.moveRobotSlideBy(slideDistanceInIncPerLevel, 0);
-            driver0.pullLinearActuatorBy(-1 * slideInclinePerLevel); //Pull up
-            driver1.pullLinearActuatorBy(-1 * slideInclinePerLevel);
+
         } else {
-            //IN
-            driver0.pullLinearActuatorBy(slideInclinePerLevel); //pull down
-            driver1.pullLinearActuatorBy(slideInclinePerLevel); //pull down
             slideDriver.moveRobotSlideBy(-1 * slideDistanceInIncPerLevel, 0);
         }
     }

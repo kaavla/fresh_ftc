@@ -91,7 +91,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                     .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 40, DriveConstants.TRACK_WIDTH ) ) ) )
                     .addTemporalMarker(() -> {
                         //moveSlideToPos(lvl, SlideDirection.OUT);
-                        custommoveSlideToPos(lvl,SlideDirection.OUT, 10.5, 0.1);
+                        //custommoveSlideToPos(lvl,SlideDirection.OUT, 10.5,0.0);
                     })
                     .setTangent(Math.toRadians(90+45))
                     .splineToLinearHeading(dropPos, Math.toRadians(270))
@@ -103,7 +103,7 @@ public class AutoBlueWarehouse extends tataAutonomousBase {
                     .waitSeconds( 1 )
                     .addTemporalMarker( ( ) -> {
                         //moveSlideToPos(lvl, SlideDirection.IN);
-                        custommoveSlideToPos(lvl,SlideDirection.IN, 10.5, 0.1);
+                        //custommoveSlideToPos(lvl,SlideDirection.IN, 10.5, 0.1);
                     } )
                     .build();
             robot.followTrajectorySequence(dropPreloadedGE);

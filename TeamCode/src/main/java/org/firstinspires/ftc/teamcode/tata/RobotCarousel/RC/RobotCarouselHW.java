@@ -18,10 +18,10 @@ public class RobotCarouselHW {
     public tataAutonomousBase.SideColor currSide;
 
     private static final double CAROUSEL_DIAM_INCH = 15;
-    private static final double WHEEL_DIAM_INCH = 4;
+    private static final double WHEEL_DIAM_INCH = 2;
 
     private static final double TICK_COUNTS_PER_INCH = (13.7 * 28) / (4 * 3.1415);
-    private static final double MOTOR_SPEED = 0.5;
+
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap, tataAutonomousBase.SideColor sc) {
@@ -58,8 +58,8 @@ public class RobotCarouselHW {
 
         S0.setTargetPosition(newPos);
         S0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        S0.setPower(Math.abs(speed));
-
+        //S0.setPower(Math.abs(speed));
+        S0.setVelocity(3000);
         RobotLog.ii("L124", "Motors run to positoin %2d", newPos);
     }
 

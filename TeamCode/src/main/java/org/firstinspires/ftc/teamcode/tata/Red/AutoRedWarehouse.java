@@ -87,7 +87,7 @@ public class AutoRedWarehouse extends tataAutonomousBase {
                     .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 40, DriveConstants.TRACK_WIDTH ) ) ) )
                     .addTemporalMarker(() -> {
                         //moveSlideToPos(lvl, SlideDirection.OUT);
-                        custommoveSlideToPos(lvl,SlideDirection.OUT, 10.5, 0.1);
+                        //custommoveSlideToPos(lvl,SlideDirection.OUT, 10.5, 0.1);
                     })
                     .setTangent(Math.toRadians(270 + 45))
                     .splineToLinearHeading(dropPos, Math.toRadians(180-67.5))
@@ -99,7 +99,7 @@ public class AutoRedWarehouse extends tataAutonomousBase {
                     .waitSeconds( 1 )
                     .addTemporalMarker( ( ) -> {
                         //moveSlideToPos(lvl, SlideDirection.IN);
-                        custommoveSlideToPos(lvl,SlideDirection.IN, 10.5, 0.1);
+                        //custommoveSlideToPos(lvl,SlideDirection.IN, 10.5, 0.1);
                     } )
                     .build();
             robot.followTrajectorySequence(dropPreloadedGE);

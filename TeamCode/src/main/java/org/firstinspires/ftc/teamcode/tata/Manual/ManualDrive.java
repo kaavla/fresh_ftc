@@ -34,7 +34,7 @@ public class ManualDrive extends tataAutonomousBase {
                 .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint( 60 ), new MecanumVelocityConstraint( 70, 14.1 ) ) ) )
 
                 .addTemporalMarker(() -> {
-                    custommoveSlideToPos(3, SlideDirection.OUT, 20.5, 0.0);
+                    //custommoveSlideToPos(3, SlideDirection.OUT, 20.5, 0.0);
                 })
 
                 .setTangent( Math.toRadians( 190) )
@@ -55,7 +55,7 @@ public class ManualDrive extends tataAutonomousBase {
 
         TrajectorySequence dropElement = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
-                    custommoveSlideToPos(3, SlideDirection.OUT, 8.0, 0.0);
+                    //custommoveSlideToPos(3, SlideDirection.OUT, 8.0, 0.0);
                 })
 
                 .back(18)
@@ -75,7 +75,7 @@ public class ManualDrive extends tataAutonomousBase {
         TrajectorySequence dropElement = getTrajectorySequenceBuilder()
                 .forward(4)
                 .addTemporalMarker(() -> {
-                    custommoveSlideToPos(3, SlideDirection.IN, 20.5, 0.0);
+                    //custommoveSlideToPos(3, SlideDirection.IN, 20.5, 0.0);
                 })
 
                 //.setTangent( Math.toRadians( 90) )
@@ -92,7 +92,7 @@ public class ManualDrive extends tataAutonomousBase {
 
         TrajectorySequence dropElement = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
-                    custommoveSlideToPos(3, SlideDirection.IN, 8.0, 0.0);
+                    //custommoveSlideToPos(3, SlideDirection.IN, 8.0, 0.0);
                 })
                 .setTangent( Math.toRadians( 45) )
                 .splineToLinearHeading(pose, Math.toRadians(90))
