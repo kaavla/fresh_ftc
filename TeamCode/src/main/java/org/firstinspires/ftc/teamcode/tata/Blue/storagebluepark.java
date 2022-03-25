@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
 
 @Autonomous(group = "robot")
 public class storagebluepark extends tataAutonomousBase {
-    public Pose2d startPose = new Pose2d(-39.5, 66.25, Math.toRadians(0));
+    public Pose2d startPose = new Pose2d(-39.5, 66.25, Math.toRadians(90));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -24,13 +24,15 @@ public class storagebluepark extends tataAutonomousBase {
             return;
         }
 
-        //go forward
+        autoAlliancePark(5.0);
 
+        //go forward
+        /*
         traj0 = robot.trajectoryBuilder((startPose))
                 .lineToSplineHeading(new Pose2d(-60, 35, Math.toRadians(90)))
                 .build();
         robot.followTrajectory(traj0);
-
+*/
 
     }
 }

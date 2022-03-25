@@ -28,8 +28,8 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
             new Pose2d(-3.5, 43.5, Math.toRadians(67.5)),  //level 1
             new Pose2d(-2.3, 46.8, Math.toRadians(67.5)),  //level 2
             new Pose2d(-1.9, 46.8, Math.toRadians(67.5)),
-            new Pose2d(-1.9, 46.8, Math.toRadians(62.5)),
-            new Pose2d(-1.9, 46.8, Math.toRadians(57.5))}; //level 3
+            new Pose2d(-1.9, 46.8, Math.toRadians(75)),
+            new Pose2d(-1.9, 46.8, Math.toRadians(85))}; //level 3
 
     private double wallPos = 63;
 
@@ -41,7 +41,6 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
 
         while (!isStopRequested() && !isStarted()) {
             barCodeLoc = getMarkerPos();
-
             telemetry.addData("Waiting to Start. Element position", barCodeLoc);
             telemetry.update();
         }
@@ -58,8 +57,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
             stopThreads();
             return;
         }
-        barCodeLoc = 3;
-
+        //barCodeLoc = 3;
         TrajectorySequence moveToDropGE = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
                     moveSlideToPos(barCodeLoc, SlideDirection.OUT);
@@ -76,33 +74,42 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     moveSlideToPos(barCodeLoc, SlideDirection.IN);
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
-                .setTangent(Math.toRadians(35))
-                .splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(42, 63))
-                .addTemporalMarker(() -> {
-                    inTakeDriver.intakeSet(true, true);
-                })
-
+                .setTangent(Math.toRadians(75))
+                //.splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
+                .lineToLinearHeading( new Pose2d( 4, wallPos , Math.toRadians( 0 ) ))
                 .build();
         robot.followTrajectorySequence(moveToDropGE);
         PoseStorage.currentPose = robot.getPoseEstimate();
+        //dsParams = sensorDriver.getRobotSensorParams();
+        TrajectorySequence moveToDropGE2 = getTrajectorySequenceBuilder()
+                .strafeLeft(2)
+                .forward(38)
+                //.lineToConstantHeading(new Vector2d(42, 63))
+                .addTemporalMarker(() -> {
+                    inTakeDriver.intakeSet(true, true);
+                })
+                .build();
+        robot.followTrajectorySequence(moveToDropGE2);
+        PoseStorage.currentPose = robot.getPoseEstimate();
+
+
 
         //Correct Robot Orientation
         //imuParams = imuDriver.getRobotImuParams();
         //robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 270));
 
-        dsParams = sensorDriver.getRobotSensorParams();
+
 
         RobotLog.ii("SHANK", "Duck Side Red - RS %.2f, F %.2f", dsParams.x_RS, dsParams.x_LF);
 
 
         //Check if duck has been collected
         TrajectorySequence collectDuck = getTrajectorySequenceBuilder()
-                .forward(7)
+                .forward(5)
                 .build();
 
         ElapsedTime stopTimer = new ElapsedTime();
-        while (opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < 3)) {
+        while (opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < 4)) {
             if (inTakeDriver.isElementCollected()) {
                 //Game Elemented is collected
                 break;
@@ -124,8 +131,10 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 .addTemporalMarker(() -> {
                     moveSlideToPos(3, SlideDirection.OUT);
                 })
-                .lineToConstantHeading(new Vector2d(14, 63 + Math.min(dsParams.x_LF, 3)))
-                .splineToLinearHeading(dropPose[4], Math.toRadians(180 + 65))
+                .lineToConstantHeading(new Vector2d(4, 63 + Math.min(dsParams.x_LF, 3)))
+                //prev 14
+                .lineToLinearHeading(dropPose[4])
+                //.splineToLinearHeading(dropPose[4], Math.toRadians(180 + 67.5))
 
                 .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
@@ -136,21 +145,33 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     moveSlideToPos(3, SlideDirection.IN);
                     //sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
                 })
-                .setTangent(Math.toRadians(40))
-                .splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(42, 63))
+                .lineToLinearHeading( new Pose2d( 4, wallPos , Math.toRadians( 0 ) ))
+                .build();
+        robot.followTrajectorySequence(moveToDropDuck);
+        PoseStorage.currentPose = robot.getPoseEstimate();
+
+        //dsParams = sensorDriver.getRobotSensorParams();
+
+        TrajectorySequence inbetween = getTrajectorySequenceBuilder()
+                .setTangent(Math.toRadians(75))
+                //.splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
+
+                .strafeLeft(2)
+                //.lineToConstantHeading(new Vector2d(42, 63))
+                .forward(38)
                 .addTemporalMarker(() -> {
                     inTakeDriver.intakeSet(true, true);
                 })
 
                 .build();
-        robot.followTrajectorySequence(moveToDropDuck);
+        robot.followTrajectorySequence(inbetween);
+
         TrajectorySequence collectDuck1 = getTrajectorySequenceBuilder()
-                .forward(8)
+                .forward(7)
                 .build();
 
         ElapsedTime stopTimer1 = new ElapsedTime();
-        while (opModeIsActive() && !isStopRequested() && (stopTimer1.seconds() < 2)) {
+        while (opModeIsActive() && !isStopRequested() && (stopTimer1.seconds() < 3)) {
             if (inTakeDriver.isElementCollected()) {
                 //Game Elemented is collected
                 break;
@@ -159,6 +180,7 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
             robot.followTrajectorySequence(collectDuck);
             PoseStorage.currentPose = robot.getPoseEstimate();
         }
+        dsParams = sensorDriver.getRobotSensorParams();
         TrajectorySequence moveToDropDuck1 = getTrajectorySequenceBuilder()
                 .addTemporalMarker(() -> {
                     inTakeDriver.intakeSet(false, true);
@@ -167,8 +189,10 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                     moveSlideToPos(3, SlideDirection.OUT);
                 })
                 .setTangent(Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(14, 63 + Math.min(dsParams.x_LF, 3)))
-                .splineToLinearHeading(dropPose[5], Math.toRadians(180 + 62.5))
+                .lineToConstantHeading(new Vector2d(4, 63 + Math.min(dsParams.x_LF, 3)))
+                //prev 4
+                .lineToLinearHeading(dropPose[5])
+                //.splineToLinearHeading(dropPose[5], Math.toRadians(180 + 67.5))
 
                 .waitSeconds(0.2)
                 .addTemporalMarker(() -> {
@@ -181,12 +205,14 @@ public class AutoBlueWarehouseManav extends tataAutonomousBase {
                 })
                 .build();
         robot.followTrajectorySequence(moveToDropDuck1);
-        sleep(1000);
 
         TrajectorySequence moveToPark = getTrajectorySequenceBuilder()
-                .setTangent(Math.toRadians(35))
-                .splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(42, 63))
+                .setTangent(Math.toRadians(75))
+                //.splineToSplineHeading(new Pose2d(14, wallPos, Math.toRadians(0)), Math.toRadians(0))
+                //.lineToConstantHeading(new Vector2d(42, 63))
+                .lineToLinearHeading( new Pose2d( 4, wallPos , Math.toRadians( 0 ) ))
+                .strafeLeft(3)
+                .forward(38)
                 .addTemporalMarker(() -> {
                     inTakeDriver.intakeSet(true, true);
                 })

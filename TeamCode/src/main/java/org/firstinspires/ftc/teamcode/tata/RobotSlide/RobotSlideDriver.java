@@ -86,23 +86,13 @@ public class RobotSlideDriver implements Runnable {
         } else if (gp.dpad_up) {
             dropGameElement();
         }
-        /*
         else if (gp.left_bumper) {
-            slideHW.pullSlideUp(0.1, false);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            moveMagnetServo(1); //Move servo Up
 
         } else if (gp.right_bumper) {
-            slideHW.pullSlideUp(0.1, true);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
+            moveMagnetServo(0); //Move servo down
+
+        }
         else {
 
             slideHW.motorSetRawSpeed(0.0);
@@ -184,18 +174,6 @@ public class RobotSlideDriver implements Runnable {
  */
 
     private void robotSlidePositionUpdate() {
-        /*
-        if (tiltSlideBoxPos >= 0) {
-            slideHW.setSlideServoCurrPos(0, tiltSlideBoxPos);
-            tiltSlideBoxPos = -1.0;
-        }
-
-        if (rotateSlideBoxArmPos >= 0) {
-            slideHW.setSlideServoCurrPos(1, rotateSlideBoxArmPos);
-            rotateSlideBoxArmPos = -1.0;
-        }
-
-         */
 
         if (delta_x != 0 || delta_i != 0 ) {
             //Move the robot Arm only for non-zero values of delta_x, delta_y
@@ -225,6 +203,24 @@ public class RobotSlideDriver implements Runnable {
             delta_i = di;
             is_done = false;
         }
+    }
+
+    public void moveMagnetServo(int position) {
+        double mag_servo_delta = 0.5;
+        if (position == 0) {
+            //Magnet servo is down
+            slideHW.setSlideServoCurrPosAbs(2, 0.0);
+        } else {
+            //magnet servo is UP
+            slideHW.setSlideServoCurrPosAbs(2, 0.08);
+        }
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

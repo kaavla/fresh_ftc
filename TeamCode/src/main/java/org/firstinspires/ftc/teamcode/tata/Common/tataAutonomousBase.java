@@ -16,9 +16,11 @@ import org.firstinspires.ftc.teamcode.tata.RobotImu.RobotImuParams;
 import org.firstinspires.ftc.teamcode.tata.RobotIntake.RobotIntakeDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotLinearActuators.RobotLinearActuatorDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorDriver;
+import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorHW;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSideArm.RobotSideArmDriver;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
 public class tataAutonomousBase extends LinearOpMode {
@@ -152,6 +154,57 @@ public class tataAutonomousBase extends LinearOpMode {
         return openCVMainDriver.getMarkerPos();
 
     }
+    public void autoAlliancePark(double timeoutInSec){
+
+        RobotSensorHW.DetectedColors colorTodetect = RobotSensorHW.DetectedColors.RED;
+        if (currSide == SideColor.Blue) {
+            colorTodetect = RobotSensorHW.DetectedColors.BLUE;
+        }
+
+        //Read Color
+        dsParams = sensorDriver.getRobotSensorParams();
+
+        //Timer
+        ElapsedTime stopTimer = new ElapsedTime();
+
+        int i = 0;
+
+        while(opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < timeoutInSec))
+        {
+            if (dsParams.c_LS == colorTodetect || dsParams.c_RS == colorTodetect) {
+                RobotLog.ii("SHANK", "Red Detected ");
+                break;
+            }
+            //Check if duck has been collected
+            TrajectorySequence park = getTrajectorySequenceBuilder()
+                    .forward(2)
+                    .build();
+            robot.followTrajectorySequence(park);
+
+            dsParams = sensorDriver.getRobotSensorParams();
+            i = i + 1;
+        }
+
+        //Correct Robot Orientation
+        if (currSide == SideColor.Red) {
+            imuParams = imuDriver.getRobotImuParams();
+            robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 270));
+        } else {
+            //Blue
+            imuParams = imuDriver.getRobotImuParams();
+            robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 90));
+
+        }
+
+        //Check if duck has been collected
+        TrajectorySequence park = getTrajectorySequenceBuilder()
+                .forward(8.5)
+                .build();
+        robot.followTrajectorySequence(park);
+
+    }
+
+
     public TrajectorySequenceBuilder getTrajectorySequenceBuilder() {
         return robot.trajectorySequenceBuilder(robot.getPoseEstimate());
     }
@@ -168,7 +221,7 @@ public class tataAutonomousBase extends LinearOpMode {
     public void moveSlideToPos(int lvl, SlideDirection slideDirection) {
         //0th element should be ignored as levels are 1, 2, 3
         double slideDistanceInIncPerLevel[] = {0, 6.0, 8.5, 12};
-        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.05};
+        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.0};
 
         if (slideDirection == SlideDirection.OUT) {
             slideDriver.moveRobotSlideBy(slideDistanceInIncPerLevel[lvl], 0);

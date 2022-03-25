@@ -38,7 +38,7 @@ public class ShankBlue2 implements MeepMeepPath{
 
 				//Go to Collect 1st Element
 				.setTangent( Math.toRadians( 75) )
-				.splineToSplineHeading( new Pose2d( 14, wallPos , Math.toRadians( 0 ) ), Math.toRadians( 0))
+				.lineToLinearHeading( new Pose2d( 4, wallPos , Math.toRadians( 0 ) ))
 				.lineToConstantHeading( new Vector2d( 42, 63 ) )
 				.addTemporalMarker( ( ) -> {
 					//inTakeDriver.intakeSet(true, true);
@@ -59,8 +59,9 @@ public class ShankBlue2 implements MeepMeepPath{
 				} )
 
 				.setTangent(Math.toRadians(180 ))
-				.lineToConstantHeading( new Vector2d( 14, 63 ) )
-				.splineToLinearHeading(new Pose2d( -2.22, 42, Math.toRadians( 67.5 )), Math.toRadians(180+67.5))
+				.lineToConstantHeading( new Vector2d( 4, 63 ) )
+				//.splineToLinearHeading(new Pose2d( -2.22, 42, Math.toRadians( 67.5 )), Math.toRadians(180+67.5))
+				.lineToLinearHeading( new Pose2d( -2.22, 42 , Math.toRadians( 67.5 ) ))
 				//.splineToLinearHeading(new Pose2d( 2.4, 51.5, Math.toRadians( 67.5 )), Math.toRadians(180+67.5))
 				//.back(14)
 				//.waitSeconds(0.5)
@@ -74,7 +75,7 @@ public class ShankBlue2 implements MeepMeepPath{
 
 				//Go to Collect 1st Element
 				.setTangent( Math.toRadians( 75) )
-				.splineToSplineHeading( new Pose2d( 12, wallPos, Math.toRadians( 0 ) ), Math.toRadians( 0) )
+				.lineToLinearHeading( new Pose2d( 4, wallPos , Math.toRadians( 0 ) ))
 
 
 				.build( );

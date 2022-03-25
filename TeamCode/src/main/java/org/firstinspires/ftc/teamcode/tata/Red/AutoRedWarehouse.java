@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.tata.Common.PoseStorage;
 import org.firstinspires.ftc.teamcode.tata.Common.tataAutonomousBase;
+import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorHW;
 import org.firstinspires.ftc.teamcode.tata.RobotSensors.RobotSensorParams;
 import org.firstinspires.ftc.teamcode.tata.RobotSlide.RobotSlideDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -15,6 +16,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.*;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 //import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 import java.util.*;
 
@@ -24,7 +27,7 @@ public class AutoRedWarehouse extends tataAutonomousBase {
     double wallPos = -63;
 
     //start position
-    public Pose2d startPose = new Pose2d(6, -61, Math.toRadians(90));
+    public Pose2d startPose = new Pose2d(6, -61, Math.toRadians(260));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,6 +44,41 @@ public class AutoRedWarehouse extends tataAutonomousBase {
             return;
         }
 
+        autoAlliancePark(5.0);
+/*
+        dsParams = sensorDriver.getRobotSensorParams();
+        ElapsedTime stopTimer = new ElapsedTime();
+        int i = 0;
+        while(opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < 5))
+        {
+            if (dsParams.c_LS == RobotSensorHW.DetectedColors.RED || dsParams.c_RS == RobotSensorHW.DetectedColors.RED) {
+                RobotLog.ii("SHANK", "Red Detected ");
+                break;
+            }
+            //Check if duck has been collected
+            TrajectorySequence park = getTrajectorySequenceBuilder()
+                    .forward(2)
+                    .build();
+            robot.followTrajectorySequence(park);
+
+            dsParams = sensorDriver.getRobotSensorParams();
+            i = i + 1;
+
+        }
+        RobotLog.ii("SHANK", "out %d", i);
+
+        //Correct Robot Orientation
+        imuParams = imuDriver.getRobotImuParams();
+        robot.turn(-1 * Math.toRadians(imuParams.correctedHeading - 270));
+
+        //Check if duck has been collected
+        TrajectorySequence park = getTrajectorySequenceBuilder()
+                .forward(8)
+                .build();
+        robot.followTrajectorySequence(park);
+    */
+
+        /*
         //Move towards team marker
         TrajectorySequence identifyTeamMarker = getTrajectorySequenceBuilder ()
                 .setVelConstraint( new MinVelocityConstraint( Arrays.asList(new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL ), new MecanumVelocityConstraint( 15, DriveConstants.TRACK_WIDTH ) ) ) )
@@ -192,7 +230,7 @@ public class AutoRedWarehouse extends tataAutonomousBase {
         robot.followTrajectorySequence(park);
         PoseStorage.currentPose = robot.getPoseEstimate();
 
-
+        */
         stopThreads();
     }
 }

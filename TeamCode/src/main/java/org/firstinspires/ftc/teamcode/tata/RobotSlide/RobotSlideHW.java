@@ -24,6 +24,8 @@ public class RobotSlideHW {
     private Servo SLL0 = null; //Left Linear actuator
     private Servo SLL1 = null; //Right Linear actuator
 
+    private Servo SLS2 = null; //Servo holding magnet
+
     //In order to find the number of ticks counted per inch by motor encoder:
     //1. Find the motor part. Say its gobilda yellow jacket 312 RPM motor
     //2. Look up the spec sheet
@@ -44,7 +46,7 @@ public class RobotSlideHW {
     private double box_curr_pos_L = 0.5;
     private double box_curr_pos_R = 0.5;
     private double box_arm_curr_pos = 1.0;
-
+    private double magnet_curr_pos   = 0.0;
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -70,6 +72,7 @@ public class RobotSlideHW {
         SLS0L = ahwMap.get(Servo.class, "SLS0L");
         SLS0R = ahwMap.get(Servo.class, "SLS0R");
         SLS1 = ahwMap.get(Servo.class, "SLS1");
+        SLS2 = ahwMap.get(Servo.class, "SLS2");
 
         //SLS1CR = ahwMap.get(CRServo.class, "SLS1");
 
@@ -82,6 +85,8 @@ public class RobotSlideHW {
         SLS0R.setPosition(box_curr_pos_R);
 
         SLS1.setPosition(box_arm_curr_pos);
+        SLS2.setPosition(magnet_curr_pos);
+
 
         SLL0.setPosition(curr_inclination);
         SLL1.setPosition(curr_inclination);
@@ -91,6 +96,7 @@ public class RobotSlideHW {
         box_curr_pos_L = 0.5;
         box_curr_pos_R = 0.5;
         box_arm_curr_pos = 1.0;
+        magnet_curr_pos = 0.0;
 
         RobotLog.ii("SL124", "Exit - init");
     }
@@ -114,6 +120,8 @@ public class RobotSlideHW {
             currPos_T = SLS0L.getPosition();
         } else if (servoNum == 1) {
             currPos_T = SLS1.getPosition();
+        } else if (servoNum == 2) {
+            currPos_T = SLS2.getPosition();
         }
         return (currPos_T);
     }
@@ -132,6 +140,9 @@ public class RobotSlideHW {
         } else if (servoNum == 1) {
             box_arm_curr_pos = box_arm_curr_pos + delta;
             SLS1.setPosition(box_arm_curr_pos);
+        } else   if (servoNum == 2) {
+            magnet_curr_pos = magnet_curr_pos + delta;
+            SLS2.setPosition(magnet_curr_pos);
         }
         return;
     }
@@ -140,6 +151,9 @@ public class RobotSlideHW {
         if (servoNum == 1) {
             box_arm_curr_pos = abs;
             SLS1.setPosition(box_arm_curr_pos);
+        } else if (servoNum == 2) {
+            magnet_curr_pos = abs;
+            SLS2.setPosition(magnet_curr_pos);
         }
         return;
     }

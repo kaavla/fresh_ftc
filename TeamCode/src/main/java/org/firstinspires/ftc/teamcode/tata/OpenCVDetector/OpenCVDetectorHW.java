@@ -19,7 +19,7 @@ public class OpenCVDetectorHW {
     private OpenCvWebcam webcamIntake;
     private Telemetry telemetry;
     private CapstoneDetector detector = null;
-    private IntakeCapstoneDetectorOnlyBlue intakeDetector = null;
+    private IntakeCapstoneDetector intakeDetector = null;
 
     private tataAutonomousBase.SideColor currSide;
     private OpenCVDetectorDriver.RobotCamera camera_type;
@@ -49,7 +49,7 @@ public class OpenCVDetectorHW {
             RobotLog.ii("SHANK", "OpenCVInit - enter, INTAKE ");
             //Intake camera
             webcamIntake = OpenCvCameraFactory.getInstance().createWebcam(ahwMap.get(WebcamName.class, "intakeWC"));
-            intakeDetector = new IntakeCapstoneDetectorOnlyBlue(telemetry);
+            intakeDetector = new IntakeCapstoneDetector(telemetry);
             webcamIntake.setPipeline(intakeDetector);
             webcamIntake.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
