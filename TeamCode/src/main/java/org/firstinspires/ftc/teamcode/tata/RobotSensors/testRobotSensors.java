@@ -13,6 +13,7 @@ public class testRobotSensors extends LinearOpMode {
         params = sensorDriver.getRobotSensorParams();
         telemetry.addData("Front:", "%2f : %2f inc ", params.x_LF, params.x_RF);
         telemetry.addData("Rear:", "%2f : %2f inc ", params.x_LR, params.x_RR);
+        telemetry.addData("Side (L-R):", "%2f : %2f inc ", params.x_LS, params.x_RS);
         switch (params.c_LS) {
             case RED:
                 telemetry.addData("Color:", "Left Red");

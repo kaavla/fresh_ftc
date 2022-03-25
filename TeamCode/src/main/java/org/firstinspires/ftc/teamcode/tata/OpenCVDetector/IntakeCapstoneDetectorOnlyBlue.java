@@ -24,7 +24,7 @@ public class IntakeCapstoneDetectorOnlyBlue extends OpenCvPipeline {
             new Point(320, 240),
             new Point(420, 340));
     static double PERCENT_COLOR_THRESHOLD = 0.4;
-
+    private boolean debug_mode = false;
     public IntakeCapstoneDetectorOnlyBlue(Telemetry t) {
         telemetry = t;
     }
@@ -46,10 +46,10 @@ public class IntakeCapstoneDetectorOnlyBlue extends OpenCvPipeline {
 
         left.release();
 
-
-        telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
-        telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
-
+        if (debug_mode) {
+            telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
+            telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
+        }
         boolean capLeft = leftValue < PERCENT_COLOR_THRESHOLD;
 
         Scalar colorNotCap = new Scalar(255, 0, 0);
@@ -57,16 +57,16 @@ public class IntakeCapstoneDetectorOnlyBlue extends OpenCvPipeline {
 
         if (capLeft ) {
             intake_status = IntakeStatus.FULL;
-            telemetry.addData("Capstone Location", "FULL");
+            if (debug_mode) telemetry.addData("Capstone Location", "FULL");
             Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
             Imgproc.rectangle(mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
         } else {
             intake_status = IntakeStatus.EMPTY;
-            telemetry.addData("Capstone Location", "EMPTY");
+            if (debug_mode) telemetry.addData("Capstone Location", "EMPTY");
             Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
             Imgproc.rectangle(mat, CAP_ROI, intake_status == IntakeStatus.FULL? colorCap:colorNotCap);
         }
-        telemetry.update();
+        if (debug_mode) telemetry.update();
 
         return mat;
     }
