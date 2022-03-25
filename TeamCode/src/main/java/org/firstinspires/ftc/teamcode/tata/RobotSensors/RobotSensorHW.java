@@ -53,8 +53,9 @@ public class RobotSensorHW {
     }
 
     public RobotSensorParams getDistances() {
+        double correction = 0.0;
         rsp.x_LF =dsLF.getDistance(DistanceUnit.INCH);
-        rsp.x_RF =dsRF.getDistance(DistanceUnit.INCH);
+        rsp.x_RF =dsRF.getDistance(DistanceUnit.INCH) + correction;
         rsp.x_LR =dsLR.getDistance(DistanceUnit.INCH);
         rsp.x_RR =dsRR.getDistance(DistanceUnit.INCH);
         rsp.x_LS =dsLS.getDistance(DistanceUnit.INCH);

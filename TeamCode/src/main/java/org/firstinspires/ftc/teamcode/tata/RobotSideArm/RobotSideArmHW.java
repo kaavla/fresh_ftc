@@ -14,7 +14,7 @@ public class RobotSideArmHW {
         RobotLog.ii("L124", "Enter - init");
 
         SL  = ahwMap.get(Servo.class, "S3" );
-        SR  = ahwMap.get(Servo.class, "S12" );
+        SR  = ahwMap.get(Servo.class, "CRS1" );
 
         initRobotArm();
         RobotLog.ii("L124", "Exit - init");

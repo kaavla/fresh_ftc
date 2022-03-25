@@ -12,9 +12,16 @@ public class RobotSideArmDriver implements Runnable {
         UP,
         INVALID
     }
+    public enum RobotSideArmSide {
+        LEFT_SIDE,
+        RIGHT_SIDE,
+        BOTH_SIDES,
+        INVALID
+
+    }
     private RobotSideArmHW sideArmHW = new RobotSideArmHW();
     private RobotSideArmPreSetPos sideArmPos;
-
+    private RobotSideArmSide sideArmSide;
     private boolean is_done = true;
 
     //Thead run condition
@@ -27,38 +34,48 @@ public class RobotSideArmDriver implements Runnable {
         sideArmHW.init(ahwMap);
         sleepTime = threadSleepDelay;
         sideArmPos = RobotSideArmPreSetPos.UP;
+        sideArmSide = RobotSideArmSide.BOTH_SIDES;
     }
 
     private void robotArmPositionUpdate() {
         if (is_done == false) {
             is_done = true;
             if (sideArmPos == RobotSideArmPreSetPos.UP) {
-                sideArmHW.servoSetPosRaw(0, 0.0);
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (sideArmSide == RobotSideArmSide.LEFT_SIDE || sideArmSide == RobotSideArmSide.BOTH_SIDES) {
+                    sideArmHW.servoSetPosRaw(0, 0.0);
+                    try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                sideArmHW.servoSetPosRaw(1, 0.0);
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+                if (sideArmSide == RobotSideArmSide.RIGHT_SIDE || sideArmSide == RobotSideArmSide.BOTH_SIDES) {
+                    sideArmHW.servoSetPosRaw(1, 0.0);
+                    try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             } else {
                 //DOWN
-                sideArmHW.servoSetPosRaw(0, 0.7);
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (sideArmSide == RobotSideArmSide.LEFT_SIDE || sideArmSide == RobotSideArmSide.BOTH_SIDES) {
+                    sideArmHW.servoSetPosRaw(0, 0.7);
+                    try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                sideArmHW.servoSetPosRaw(1, 0.7);
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (sideArmSide == RobotSideArmSide.RIGHT_SIDE || sideArmSide == RobotSideArmSide.BOTH_SIDES) {
+                    sideArmHW.servoSetPosRaw(1, 0.7);
+                    try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -69,10 +86,11 @@ public class RobotSideArmDriver implements Runnable {
     }
 
 
-    public void activateSideArms(RobotSideArmPreSetPos pos) {
+    public void activateSideArms(RobotSideArmSide side, RobotSideArmPreSetPos pos) {
         if (is_done == true) {
             is_done = false;
             sideArmPos = pos;
+            sideArmSide = side;
         }
     }
 

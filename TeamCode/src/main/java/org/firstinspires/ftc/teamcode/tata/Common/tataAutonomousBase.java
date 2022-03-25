@@ -204,6 +204,39 @@ public class tataAutonomousBase extends LinearOpMode {
 
     }
 
+    public void autoCollectElements(double timeoutInSec){
+
+        RobotSensorHW.DetectedColors colorTodetect = RobotSensorHW.DetectedColors.RED;
+        if (currSide == SideColor.Blue) {
+            colorTodetect = RobotSensorHW.DetectedColors.BLUE;
+        }
+
+        //Timer
+        ElapsedTime stopTimer = new ElapsedTime();
+
+        int i = 0;
+
+        while(opModeIsActive() && !isStopRequested() && (stopTimer.seconds() < timeoutInSec))
+        {
+            if (inTakeDriver.isElementCollected() == true) {
+                RobotLog.ii("SHANK", "Element  Detected ");
+                break;
+            }
+            //Check if duck has been collected
+            TrajectorySequence seek = getTrajectorySequenceBuilder()
+                    .forward(2)
+                    .build();
+            robot.followTrajectorySequence(seek);
+
+            //dsParams = sensorDriver.getRobotSensorParams();
+            i = i + 1;
+        }
+        RobotLog.ii("SHANK", "i = %d ", i);
+
+        //sleep(2000);
+        //inTakeDriver.intakeSet(false, true);
+
+    }
 
     public TrajectorySequenceBuilder getTrajectorySequenceBuilder() {
         return robot.trajectorySequenceBuilder(robot.getPoseEstimate());
@@ -234,6 +267,26 @@ public class tataAutonomousBase extends LinearOpMode {
             slideDriver.moveRobotSlideBy(-1 * slideDistanceInIncPerLevel[lvl], 0);
         }
     }
+
+    public void moveSlideToPosShank(int lvl, SlideDirection slideDirection) {
+        //0th element should be ignored as levels are 1, 2, 3
+        double slideDistanceInIncPerLevel[] = {0, 2.75, 8.5, 12};
+        double slideInclinePerLevel[]       = {0, 0.0, 0.0,  0.0};
+
+        if (slideDirection == SlideDirection.OUT) {
+            slideDriver.moveRobotSlideBy(slideDistanceInIncPerLevel[lvl], 0);
+            driver0.pullLinearActuatorBy(-1 * slideInclinePerLevel[lvl]); //Pull up
+            driver1.pullLinearActuatorBy(-1 * slideInclinePerLevel[lvl]);
+        } else {
+            //IN
+            driver0.pullLinearActuatorBy(slideInclinePerLevel[lvl]); //pull down
+            driver1.pullLinearActuatorBy(slideInclinePerLevel[lvl]); //pull down
+            slideDriver.moveRobotSlideBy(-1 * slideDistanceInIncPerLevel[lvl], 0);
+        }
+        RobotLog.ii("SHANK", "Slide moved to  lvl: %d, slide: %.2f", lvl, slideDistanceInIncPerLevel[lvl]);
+
+    }
+
     public void custommoveSlideToPos(SlideDirection slideDirection, double slideDistance) {
         //0th element should be ignored as levels are 1, 2, 3
         double slideDistanceInIncPerLevel = slideDistance;

@@ -55,8 +55,9 @@ public class RobotIntakeDriver implements Runnable{
 
                 //Game element has been collected
                 //Automatically reverse the intake
-                //hw.setPower(1*0.5);
-                intakeSet(true, false);
+                hw.setPower(1*0.5);
+                //hw.startIntake(motor_power);
+                //intakeSet(true, false);
 
             }
 

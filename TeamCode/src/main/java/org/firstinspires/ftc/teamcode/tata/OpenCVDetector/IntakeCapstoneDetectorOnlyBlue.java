@@ -21,10 +21,10 @@ public class IntakeCapstoneDetectorOnlyBlue extends OpenCvPipeline {
     private IntakeStatus intake_status = IntakeStatus.EMPTY;
 
     static final Rect CAP_ROI = new Rect(
-            new Point(320, 240),
-            new Point(420, 340));
-    static double PERCENT_COLOR_THRESHOLD = 0.4;
-    private boolean debug_mode = false;
+            new Point(120, 140),
+            new Point(420, 440));
+    static double PERCENT_COLOR_THRESHOLD = 0.2;
+    private boolean debug_mode = true;
     public IntakeCapstoneDetectorOnlyBlue(Telemetry t) {
         telemetry = t;
     }
@@ -34,8 +34,8 @@ public class IntakeCapstoneDetectorOnlyBlue extends OpenCvPipeline {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         //Blue
-        Scalar lowHSV = new Scalar(110, 50, 50);
-        Scalar highHSV = new Scalar(130, 255, 255);
+        Scalar lowHSV = new Scalar(120, 50, 50);
+        Scalar highHSV = new Scalar(140, 255, 255);
 
 
         Core.inRange(mat, lowHSV, highHSV, mat);

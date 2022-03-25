@@ -19,13 +19,19 @@ public class storageredpark extends tataAutonomousBase {
 
         waitForStart();
 
+
         if (isStopRequested()) {
             stopThreads();
             return;
         }
+        sleep(1000);
 
+        inTakeDriver.intakeSet(true, true);
+
+        autoCollectElements(10);
         //go forward
-
+        sleep(5000);
+        inTakeDriver.intakeSet(false, true);
 
 
     }

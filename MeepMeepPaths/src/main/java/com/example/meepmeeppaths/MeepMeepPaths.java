@@ -30,8 +30,8 @@ public class MeepMeepPaths {
 		//PositionGrapherTest rt = new PositionGrapherTest();
 		//TechnovaKillerAuto rt = new TechnovaKillerAuto();
 		//ShankRed1 rt = new ShankRed1();
-		//ShankBlue1 rt = new ShankBlue1();
-		ShankBlue2 rt = new ShankBlue2();
+		ShankBlue1 rt = new ShankBlue1();
+		//ShankBlue2 rt = new ShankBlue2();
 		//ShankManualBlue rt = new ShankManualBlue();
 		//ShankManualBlueSharedHub rt = new ShankManualBlueSharedHub();
 		MeepMeep mm = new MeepMeep( 1000 )

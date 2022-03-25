@@ -28,7 +28,7 @@ public class RobotCarouselHW {
         S0  = ahwMap.get(DcMotorEx.class, "S0");
         currSide = sc;
 
-        if (currSide == tataAutonomousBase.SideColor.Red) {
+        if (currSide == tataAutonomousBase.SideColor.Blue) {
             S0.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
@@ -59,7 +59,7 @@ public class RobotCarouselHW {
         S0.setTargetPosition(newPos);
         S0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //S0.setPower(Math.abs(speed));
-        S0.setVelocity(3000);
+        S0.setVelocity(1400);
         RobotLog.ii("L124", "Motors run to positoin %2d", newPos);
     }
 

@@ -17,7 +17,7 @@ public class ShankRed1 implements MeepMeepPath{
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
 		return drive.trajectorySequenceBuilder( new Pose2d( -40.75, -63.5, Math.toRadians( 270 ) ) )
-				.waitSeconds(3)
+				.waitSeconds(2)
 				.addTemporalMarker( ( ) -> {
 					//Robot Arm to Capture Pos
 				} )
@@ -37,8 +37,10 @@ public class ShankRed1 implements MeepMeepPath{
 				.addTemporalMarker( ( ) -> {
 					//Draw Sides in
 				} )
+				.setTangent(Math.toRadians(270 ))
+				.splineToLinearHeading(new Pose2d( -55, -50, Math.toRadians( 270 )), Math.toRadians(160))
 
-				.lineToLinearHeading(new Pose2d(-58, -60, Math.toRadians(270)))
+				//.lineToLinearHeading(new Pose2d(-55, -50, Math.toRadians(270)))
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1200 );
@@ -52,8 +54,10 @@ public class ShankRed1 implements MeepMeepPath{
 				} )
 				.lineToSplineHeading(new Pose2d( -32.6, -35.75 , Math.toRadians( 180 + 30 )))
 
+				.setTangent(Math.toRadians(270 ))
+				.splineToLinearHeading(new Pose2d( -65, -35, Math.toRadians( 270 )), Math.toRadians(90))
 
-				.lineToLinearHeading(new Pose2d(-65, -35, Math.toRadians(270)))
+				//.lineToLinearHeading(new Pose2d(-65, -35, Math.toRadians(270)))
 
 
 				.build( );

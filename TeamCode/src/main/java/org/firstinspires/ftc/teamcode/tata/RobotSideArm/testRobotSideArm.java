@@ -28,9 +28,9 @@ public class testRobotSideArm extends LinearOpMode {
         double newPos = 0.5;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
+            sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmSide.BOTH_SIDES, RobotSideArmDriver.RobotSideArmPreSetPos.DOWN);
             sleep(3000);
-            sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmPreSetPos.UP);
+            sideArmDriver.activateSideArms(RobotSideArmDriver.RobotSideArmSide.BOTH_SIDES, RobotSideArmDriver.RobotSideArmPreSetPos.UP);
             sleep(3000);
 
             idle();
